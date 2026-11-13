@@ -15,6 +15,8 @@ IGNORED_URL_FRAGMENTS = {
     "/news/", "/press/", "/events/", "/about-us/", "/about/",
     "/leasing/", "/contact/", "/our-commitment/", "/privacy/",
     "/terms/", "/cookie", "/wp-content/uploads/", "#",
+    "glasreaktoren", "druckreaktoren", "prozessanlagen", "produkte",
+    "equipment", "instruments",
 }
 
 IGNORED_EXTENSIONS = {

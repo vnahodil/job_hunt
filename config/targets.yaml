@@ -535,7 +535,7 @@ direct_career_pages:
 # ============================================================================
 filters:
   positive_regex: "(chem|scien|research|r&d|analyt|synthe|labor|lab\\b|process|formulat|cataly|pfas|water|remediat|material|polymer|peptid|small molecule|quality|qa\\b|qc\\b|cmc|regulatory|application|consultant|engineer|wissenschaft|mitarbeiter|specialist|associate|intern)"
-  negative_regex: "(accountant|finance|payroll|legal counsel|attorney|patent|receptionist|chauffeur|hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupperlehre|kaufmännisch|director|head of|vice president|\\bvp\\b|chief|partner|actuarial|tax\\b|phd student|doktorand|master thesis|masterarbeit|bachelorarbeit)"
+  negative_regex: "(accountant|finance|payroll|legal counsel|attorney|patent|receptionist|chauffeur|hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupperlehre|kaufmännisch|director|head of|vice president|\\bvp\\b|chief|partner|actuarial|tax\\b|phd student|doktorand|master thesis|masterarbeit|bachelorarbeit|monteur|avor|produktionsplanung|sachbearbeiter)"
 
 # ============================================================================
 # 7. DAILY EMAIL NOTIFICATIONS

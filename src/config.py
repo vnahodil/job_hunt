@@ -144,7 +144,8 @@ class Config:
                 r"(accountant|finance|payroll|legal counsel|attorney|patent|receptionist|chauffeur|"
                 r"hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupperlehre|"
                 r"kaufmännisch|director|head of|vice president|\bvp\b|chief|partner|actuarial|tax\b|"
-                r"phd student|doktorand|master thesis|masterarbeit|bachelorarbeit)",
+                r"phd student|doktorand|master thesis|masterarbeit|bachelorarbeit|"
+                r"monteur|avor|produktionsplanung|sachbearbeiter)",
             ),
             re.IGNORECASE,
         )

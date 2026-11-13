@@ -100,10 +100,10 @@ def generate_html_dashboard(conn: sqlite3.Connection) -> None:
     <div class="controls">
         <input type="text" id="searchInput" placeholder="Filter by title, company, location, PFAS, HPLC..." oninput="filterTable()" style="flex:1;">
         <select id="scoreFilter" onchange="filterTable()">
-            <option value="7" selected>Top Fits Only (7+ / 10)</option>
+            <option value="0" selected>All Verified Roles (6+ / 10)</option>
+            <option value="7">Top Fits Only (7+ / 10)</option>
             <option value="8">Strong Matches (8+ / 10)</option>
             <option value="9">Dream Roles (9-10 / 10)</option>
-            <option value="0">All Verified Roles (6+ / 10)</option>
         </select>
         <select id="catFilter" onchange="filterTable()">
             <option value="">All Categories</option>

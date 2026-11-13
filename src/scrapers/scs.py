@@ -32,12 +32,14 @@ def fetch_scs_jobs() -> List[Dict]:
         for a in soup.find_all("a", href=True):
             href = a["href"].strip()
             text = a.get_text(" ", strip=True)
-            if not href or href.startswith("#") or href.startswith("mailto:") or href.startswith("javascript:"):
+            if not href or href.startswith("mailto:") or href.startswith("javascript:") or "#" in href:
                 continue
 
-            # Ignore social media and general SCS home links
+            # Ignore social media, equipment/product catalogs, and general SCS home links
             h_lower = href.lower()
             if any(dom in h_lower for dom in ["linkedin.com", "twitter.com", "x.com", "facebook.com", "instagram.com"]):
+                continue
+            if any(frag in h_lower for frag in ["glasreaktoren", "druckreaktoren", "prozessanlagen", "produkte", "equipment"]):
                 continue
 
             full_url = urllib.parse.urljoin(SCS_JOBS_URL, href)
@@ -67,22 +69,30 @@ def fetch_scs_jobs() -> List[Dict]:
         r_buchi = requests.get(buchiglas_url, headers=cfg.HEADERS, timeout=8)
         if r_buchi.ok:
             soup_buchi = BeautifulSoup(r_buchi.text, "html.parser")
-            for a in soup_buchi.find_all("a", href=True):
-                h = a["href"].strip()
-                t = a.get_text(" ", strip=True)
+            # Buchiglas lists openings in accordion items on stellenangebote.html (never in nav links)
+            for it in soup_buchi.find_all("div", class_="item"):
+                title_el = it.find(class_="accordion-titles")
+                if not title_el:
+                    continue
+                t = title_el.get_text(" ", strip=True).replace("Stellenangebot", "").strip()
                 if not (8 < len(t) < 120):
                     continue
+                # Exclude administration, export, assembly, and AVOR production planning
+                t_lower = t.lower()
+                if any(x in t_lower for x in ["monteur", "avor", "produktionsplanung", "sachbearbeiter", "personaladministration"]):
+                    continue
                 if cfg.POSITIVE_ROLE_KEYWORDS.search(t) and not cfg.NEGATIVE_ROLE_KEYWORDS.search(t):
-                    full_u = urllib.parse.urljoin(buchiglas_url, h)
-                    if full_u not in seen_urls:
-                        seen_urls.add(full_u)
+                    content_el = it.find(class_="accordion-content")
+                    desc = content_el.get_text(" ", strip=True) if content_el else t
+                    if buchiglas_url not in seen_urls:
+                        seen_urls.add(buchiglas_url)
                         results.append({
                             "title": t,
                             "company": "Büchi AG (Buchiglas Uster)",
                             "location": "Uster",
-                            "url": full_u,
-                            "description": f"Direct career opportunity at Büchi AG Uster (SCS partner): {t}",
-                            "source": "Swiss Chemical Society (SCS)",
+                            "url": buchiglas_url,
+                            "description": f"Direct career opportunity at Büchi AG Uster: {desc[:400]}",
+                            "source": "Buchiglas Uster",
                         })
     except Exception as e:
         print(f"  [!] Error checking Buchiglas: {e}")
