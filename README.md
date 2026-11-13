@@ -19,6 +19,25 @@ Automated daily job discovery, SBB/car commute calculator, and LLM profile-fit e
 
 ### 1. Setup Environment
 ```bash
-make setup
 cp .env.example .env
-# Optional: Add your free Google AI Studio key to .env
+# Add your free Google AI Studio key to .env:
+# export GEMINI_API_KEY="AIza..."
+```
+
+### 2. Run Discovery & Publish
+```bash
+# Full daily run & auto-publish to GitHub Pages:
+make run
+
+# Fast run (skipping slow aggregator pagination) & publish:
+make fast
+
+# Re-render dashboard from existing SQLite database & publish:
+make publish
+```
+
+### 3. Live Dashboard URL
+The dashboard is published via GitHub Pages at:
+👉 **`https://vnahodil.github.io/job_hunt/`**
+
+Status markers (`Applied`, `Hidden`) and search/filter states are saved in the browser's `localStorage`.
