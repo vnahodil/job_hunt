@@ -53,6 +53,9 @@ class Config:
         self.PROJECT_ROOT: Path = _PROJECT_ROOT
         self.DB_PATH: str = str(_PROJECT_ROOT / "chem_jobs.db")
         self.REPORT_PATH: str = str(_PROJECT_ROOT / "dashboard.html")
+        self.INDEX_PATH: str = str(_PROJECT_ROOT / "index.html")
+        self.DOCS_DIR: Path = _PROJECT_ROOT / "docs"
+        self.DOCS_INDEX_PATH: str = str(self.DOCS_DIR / "index.html")
 
         # --- HTTP ---
         self.HEADERS: Dict[str, str] = {

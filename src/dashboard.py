@@ -214,6 +214,20 @@ Please generate:
 </body>
 </html>"""
 
-    with open(cfg.REPORT_PATH, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"\n[DONE] Clean interactive dashboard written to: {cfg.REPORT_PATH}")
+    # Write to dashboard.html, index.html (root), and docs/index.html (GitHub Pages)
+    cfg.DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    target_paths = [cfg.REPORT_PATH, cfg.INDEX_PATH, cfg.DOCS_INDEX_PATH]
+
+    for p in target_paths:
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(html)
+
+    # Ensure .nojekyll exists so GitHub Pages serves raw assets and doesn't run Jekyll
+    for nojekyll_dir in [cfg.PROJECT_ROOT, cfg.DOCS_DIR]:
+        nj = nojekyll_dir / ".nojekyll"
+        if not nj.exists():
+            nj.touch()
+
+    print(f"\n[DONE] Clean interactive dashboard written to:")
+    for p in target_paths:
+        print(f"  -> {p}")

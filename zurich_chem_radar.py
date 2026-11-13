@@ -10,6 +10,8 @@ Business logic lives in the src/ package.
 """
 
 import argparse
+import os
+import subprocess
 import webbrowser
 from datetime import datetime
 
@@ -38,6 +40,42 @@ from src.scrapers.scs import fetch_scs_jobs
 from src.scrapers.description_fetcher import fetch_job_description_body
 
 
+def publish_to_github(commit_msg: str = None) -> bool:
+    """Stages updated dashboard/index files and commits & pushes to GitHub Pages."""
+    if not commit_msg:
+        commit_msg = f"Update dashboard ({datetime.now().strftime('%Y-%m-%d %H:%M')})"
+    try:
+        files_to_add = [
+            str(cfg.REPORT_PATH),
+            str(cfg.INDEX_PATH),
+            str(cfg.DOCS_INDEX_PATH),
+            str(cfg.PROJECT_ROOT / ".nojekyll"),
+            str(cfg.DOCS_DIR / ".nojekyll"),
+            str(cfg.PROJECT_ROOT / ".gitignore"),
+            str(cfg.DB_PATH),
+            str(cfg.PROJECT_ROOT / "src"),
+            str(cfg.PROJECT_ROOT / "config"),
+            str(cfg.PROJECT_ROOT / "zurich_chem_radar.py"),
+            str(cfg.PROJECT_ROOT / "ROADMAP.md"),
+            str(cfg.PROJECT_ROOT / "README.md"),
+        ]
+        existing = [f for f in files_to_add if os.path.exists(f)]
+        subprocess.run(["git", "add"] + existing, check=True, cwd=str(cfg.PROJECT_ROOT))
+
+        diff_res = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=str(cfg.PROJECT_ROOT))
+        if diff_res.returncode == 0:
+            print("[publish] No changes to commit (everything up-to-date).")
+            return True
+
+        subprocess.run(["git", "commit", "-m", commit_msg], check=True, cwd=str(cfg.PROJECT_ROOT))
+        subprocess.run(["git", "push", "origin", "main"], check=True, cwd=str(cfg.PROJECT_ROOT))
+        print("[publish] Successfully pushed updated dashboard to GitHub Pages!")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"[publish ERROR] Git command failed: {e}")
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser(description="Zurich Chemistry & Cleantech Job Radar")
     parser.add_argument("--hours", type=int, default=72, help="Lookback hours for JobSpy (default: 72)")
@@ -57,6 +95,8 @@ def main():
     )
     parser.add_argument("--rescore", action="store_true", help="Re-score all existing jobs using Gemini 2.5 Flash")
     parser.add_argument("--rescore-limit", type=int, default=None, help="Limit number of jobs to rescore")
+    parser.add_argument("--dashboard-only", action="store_true", help="Re-generate dashboard and index.html from DB without scraping")
+    parser.add_argument("--publish", action="store_true", help="Auto-commit and push updated dashboard/index to GitHub Pages")
     args = parser.parse_args()
 
     conn = init_db()
@@ -73,6 +113,15 @@ def main():
     else:
         print("[INFO] Running with built-in Chemistry/Cleantech heuristic scorer (set GEMINI_API_KEY to enable LLM scoring).")
 
+    # --dashboard-only mode: re-render HTML files from DB without scraping
+    if args.dashboard_only:
+        generate_html_dashboard(conn)
+        if args.publish:
+            publish_to_github()
+        if not args.no_browser:
+            webbrowser.open(f"file://{cfg.REPORT_PATH}")
+        return
+
     # --rescore mode: re-evaluate existing DB rows via Gemini, then regenerate dashboard
     if args.rescore:
         if not client:
@@ -80,6 +129,8 @@ def main():
             return
         rescore_database_jobs(conn, client, limit=args.rescore_limit)
         generate_html_dashboard(conn)
+        if args.publish:
+            publish_to_github()
         print(f"[+] Re-generated {cfg.REPORT_PATH}")
         if not args.no_browser:
             webbrowser.open(f"file://{cfg.REPORT_PATH}")
@@ -198,6 +249,9 @@ def main():
 
     print(f"  -> Added {new_relevant_count} new relevant positions within ~{cfg.MAX_COMMUTE_MINS}m of {cfg.HOME_ORIGIN}.")
     generate_html_dashboard(conn)
+
+    if args.publish:
+        publish_to_github()
 
     if not args.no_browser:
         webbrowser.open(f"file://{cfg.REPORT_PATH}")
