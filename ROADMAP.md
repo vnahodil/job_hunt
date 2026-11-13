@@ -39,6 +39,8 @@ Use these milestones with the Antigravity agent in VS Code (`Cmd + L`).
 - [x] Integrate **PwC Switzerland** Life Sciences & Sustainability Consulting via Workday CaaS API (`pwc.wd3.myworkdayjobs.com`).
 - [x] Expand LinkedIn, Indeed, and `jobs.ch` queries with specialized consulting practices (**Capgemini Engineering**, **Deloitte Life Sciences**, **Life Sciences Consultant**, **Sustainability Consultant**) and staffing agencies (**nemensis**, **gi life sciences**, **kelly scientific**, **gloor lang**).
 
-## Milestone 8: Daily Notification Delivery (Telegram / Email Digest)
-- [ ] Add an optional notifier module (`src/notify.py`) triggered when `--notify` is passed.
-- [ ] Send daily summary of new roles with `match_score >= 7` via Telegram Bot webhook or Gmail SMTP.
+## Milestone 8: Daily Notification Delivery (Email Digest) ✅
+- [x] Implement `src/notify.py` with multi-part MIME (rich HTML + fallback text) email digests.
+- [x] Wire automatic email delivery via Gmail SMTP (`--notify` / `--test-email`) into `zurich_chem_radar.py` and `run_daily.sh`.
+- [x] Filter for high-match positions (`match_score >= 7`) with direct dashboard link (`https://vnahodil.github.io/job_hunt/`).
+- [x] Safe local `.env` credential management (`.gitignore` protected).

@@ -23,6 +23,22 @@ _PROJECT_ROOT = Path(__file__).resolve().parent.parent
 _CONFIG_PATH = _PROJECT_ROOT / "config" / "targets.yaml"
 
 
+def _load_env_file() -> None:
+    """Reads key=value pairs from .env in project root if it exists, without overwriting existing env vars."""
+    env_file = _PROJECT_ROOT / ".env"
+    if not env_file.exists():
+        return
+    with open(env_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            k, v = line.split("=", 1)
+            k, v = k.strip(), v.strip().strip("'\"")
+            if k and k not in os.environ:
+                os.environ[k] = v
+
+
 def _load_yaml() -> dict:
     """Read and parse the YAML config file."""
     if not _CONFIG_PATH.exists():
@@ -38,6 +54,7 @@ class Config:
     """Immutable runtime configuration populated from YAML + env vars."""
 
     def __init__(self) -> None:
+        _load_env_file()
         raw = _load_yaml()
 
         # --- Commute ---
@@ -65,6 +82,21 @@ class Config:
             ),
             "Accept-Language": "en-US,en;q=0.9,de-CH;q=0.8,de;q=0.7",
         }
+
+        # --- Email Notifications ---
+        notify = raw.get("notifications", {})
+        self.NOTIFY_ENABLED: bool = bool(notify.get("enabled", True))
+        self.MIN_NOTIFY_SCORE: int = int(os.getenv("MIN_NOTIFY_SCORE", notify.get("min_score", 7)))
+        self.SMTP_HOST: str = os.getenv("SMTP_HOST", notify.get("smtp_host", "smtp.gmail.com"))
+        self.SMTP_PORT: int = int(os.getenv("SMTP_PORT", notify.get("smtp_port", 587)))
+        self.SMTP_USER: str = os.getenv("SMTP_USER", notify.get("smtp_user", ""))
+        self.SMTP_PASS: str = os.getenv("SMTP_PASS", "")
+        env_recipients = [r.strip() for r in os.getenv("NOTIFY_RECIPIENTS", "").split(",") if r.strip()]
+        self.NOTIFY_RECIPIENTS: List[str] = env_recipients or notify.get("recipients", [])
+        self.DASHBOARD_URL: str = os.getenv(
+            "DASHBOARD_URL",
+            notify.get("dashboard_url", "https://vnahodil.github.io/job_hunt/"),
+        )
 
         # --- Aggregator ---
         self.AGGREGATOR_QUERIES: List[str] = raw.get("aggregator_queries", [])

@@ -17,6 +17,7 @@ echo "==========================================" >> "$PROJECT_DIR/radar.log"
 "$PROJECT_DIR/.venv/bin/python" zurich_chem_radar.py \
     --skip-spinoff-crawl \
     --publish \
+    --notify \
     --no-browser >> "$PROJECT_DIR/radar.log" 2>&1
 
 echo "Radar run completed successfully at: $(date)" >> "$PROJECT_DIR/radar.log"

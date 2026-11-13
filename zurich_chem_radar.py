@@ -38,6 +38,7 @@ from src.scrapers.lifesciencework import fetch_lifesciencework_jobs
 from src.scrapers.startup_apis import fetch_startup_api_jobs
 from src.scrapers.scs import fetch_scs_jobs
 from src.scrapers.description_fetcher import fetch_job_description_body
+from src.notify import send_daily_email_digest
 
 
 def publish_to_github(commit_msg: str = None) -> bool:
@@ -97,6 +98,8 @@ def main():
     parser.add_argument("--rescore-limit", type=int, default=None, help="Limit number of jobs to rescore")
     parser.add_argument("--dashboard-only", action="store_true", help="Re-generate dashboard and index.html from DB without scraping")
     parser.add_argument("--publish", action="store_true", help="Auto-commit and push updated dashboard/index to GitHub Pages")
+    parser.add_argument("--notify", action="store_true", help="Send daily email digest to configured recipients")
+    parser.add_argument("--test-email", action="store_true", help="Send a test email with recent top jobs and exit")
     args = parser.parse_args()
 
     conn = init_db()
@@ -112,6 +115,38 @@ def main():
         print("[INFO] Gemini Flash semantic scoring ENABLED (gemini-3.8-flash / 3.5-flash).")
     else:
         print("[INFO] Running with built-in Chemistry/Cleantech heuristic scorer (set GEMINI_API_KEY to enable LLM scoring).")
+
+    # --test-email mode: test email connectivity with top high-match jobs
+    if args.test_email:
+        print("[*] Preparing test email digest with top high-match jobs...")
+        cur = conn.cursor()
+        cur.execute(
+            """
+            SELECT title, company, location, url, commute_mins, commute_mode,
+                   match_score, role_category, degree_fit, summary
+            FROM jobs
+            WHERE match_score >= 8 AND is_relevant = 1
+            ORDER BY match_score DESC, commute_mins ASC
+            LIMIT 4
+            """
+        )
+        sample_jobs = [
+            {
+                "title": r[0],
+                "company": r[1],
+                "location": r[2],
+                "url": r[3],
+                "commute_mins": r[4],
+                "commute_mode": r[5],
+                "match_score": r[6],
+                "role_category": r[7],
+                "degree_fit": r[8],
+                "summary": r[9],
+            }
+            for r in cur.fetchall()
+        ]
+        send_daily_email_digest(jobs=sample_jobs, conn=conn, force=True)
+        return
 
     # --dashboard-only mode: re-render HTML files from DB without scraping
     if args.dashboard_only:
@@ -252,6 +287,9 @@ def main():
 
     if args.publish:
         publish_to_github()
+
+    if args.notify or cfg.NOTIFY_ENABLED:
+        send_daily_email_digest(conn=conn)
 
     if not args.no_browser:
         webbrowser.open(f"file://{cfg.REPORT_PATH}")

@@ -20,6 +20,10 @@ dashboard:
 rescore:
 	.venv/bin/python zurich_chem_radar.py --rescore --publish
 
+# Test sending email digest with top recent jobs
+test-email:
+	.venv/bin/python zurich_chem_radar.py --test-email
+
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
