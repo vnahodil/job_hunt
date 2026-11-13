@@ -109,6 +109,37 @@ aggregator_queries:
   - "Quality Assurance Chemist"
 
 # ============================================================================
+# 2b. JOBS.CH REST API QUERIES (Switzerland's #1 Job Portal)
+# ============================================================================
+jobs_ch_queries:
+  - "organic chemistry"
+  - "synthetic chemist"
+  - "chemist"
+  - "analytical chemist"
+  - "chemiker"
+  - "process chemist"
+  - "cleantech chemistry"
+  - "pfas"
+  - "water treatment chemistry"
+  - "formulation chemist"
+  - "laborant chemie"
+
+# ============================================================================
+# 2c. MYSCIENCE.CH SCIENTIFIC RESEARCH & INDUSTRY QUERIES
+# ============================================================================
+myscience_queries:
+  - "organic chemistry"
+  - "chemist"
+  - "analytical chemistry"
+  - "cleantech"
+  - "water treatment"
+  - "catalysis"
+  - "pfas"
+  - "polymer"
+  - "formulation"
+
+
+# ============================================================================
 # 3. WORKDAY DIRECT JSON API ENDPOINTS (Zero-Browser Fast Polling)
 # ============================================================================
 workday_targets:
@@ -154,6 +185,18 @@ workday_targets:
     site_url: "https://csl.wd1.myworkdayjobs.com/en-US/CSL_External"
     search_terms: ["Zurich", "Glattbrugg", "Quality", "Scientist", "Analytical"]
 
+  - company: "Arxada"
+    default_location: "Basel"
+    api_url: "https://lsi.wd3.myworkdayjobs.com/wday/cxs/lsi/Arxada_Careers/jobs"
+    site_url: "https://lsi.wd3.myworkdayjobs.com/en-US/Arxada_Careers"
+    search_terms: ["Chemist", "Analytical", "Scientist", "Switzerland", "Basel"]
+
+  - company: "Siegfried"
+    default_location: "Zofingen"
+    api_url: "https://siegfried.wd103.myworkdayjobs.com/wday/cxs/siegfried/external/jobs"
+    site_url: "https://siegfried.wd103.myworkdayjobs.com/en-US/external"
+    search_terms: ["Chemist", "Laborant", "Analytik", "Scientist", "Quality", "Zofingen"]
+
 # ============================================================================
 # 4. SWISS RESEARCH INSTITUTES & ECOSYSTEM HUBS
 # ============================================================================
@@ -172,10 +215,10 @@ institutes_and_hubs:
   portals:
     - name: "Eawag (Refline)"
       location: "Dübendorf"
-      url: "https://apply.refline.ch/673277/search.html"
+      url: "https://apply.refline.ch/673277/search.html?form.buttons.listAll=1&target=overview"
     - name: "Empa (Refline)"
       location: "Dübendorf"
-      url: "https://apply.refline.ch/673276/search.html"
+      url: "https://apply.refline.ch/673276/search.html?form.buttons.listAll=1&target=overview"
     - name: "Paul Scherrer Institute (PSI)"
       location: "Villigen"
       url: "https://www.psi.ch/en/hr/job-opportunities"
@@ -370,14 +413,14 @@ direct_career_pages:
     url: "https://spirochem.com/careers.html"
 
   - company: "Bachem"
-    location: "Bubendorf"
+    location: "Bubendorf / Stein"
     sector: "Peptide & Oligonucleotide Organic Synthesis / QC"
-    url: "https://careers.bachem.com/"
+    url: "https://careers.bachem.com/search/?q=&locationsearch=switzerland"
 
   - company: "Clariant"
-    location: "Muttenz"
+    location: "Muttenz / Pratteln"
     sector: "Specialty Chemicals & Catalysis"
-    url: "https://www.clariant.com/en/Careers/Early-careers"
+    url: "https://careers.clariant.com/search/?q=&locationsearch=switzerland"
 
   - company: "Arxada"
     location: "Basel"
@@ -410,6 +453,16 @@ direct_career_pages:
     url: "https://www.pentapharm.com/careers/"
 
   # --- CORRIDOR F: Life Science & Cleantech Consulting (Zurich / Basel) ---
+  - company: "Gloor & Lang"
+    location: "Baden / Zurich"
+    sector: "Specialized Life Science, Pharma QA/QC & R&D Recruiting"
+    url: "https://www.gloorlang.com/de/offene-stellen/"
+
+  - company: "Chemspeed Technologies"
+    location: "Fehraltorf"
+    sector: "Automated Chemistry Synthesis & Robotics R&D"
+    url: "https://worldwidecareers-bruker.icims.com/jobs/search?in_iframe=1&ss=1&searchKeyword=chemspeed"
+
   - company: "Eraneos Switzerland"
     location: "Zürich / Basel"
     sector: "Life Sciences, Pharma & Chemical Management Consulting"
