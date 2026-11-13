@@ -1,3 +1,8 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
 # Virtual environment
 .venv/
 env/
@@ -12,6 +17,7 @@ __pycache__/
 # OS artifacts
 .DS_Store
 Thumbs.db
+.vscode/
 
 # Logs
 *.log
