@@ -1,0 +1,46 @@
+ENVISIONED CAREER DIRECTIONS & TARGET TRACKS
+
+1. Track 1: Cleantech, Environmental Chemistry & Green Tech R&D (HIGHEST PRIORITY)
+   - Scope: Catalytic water treatment, PFAS/micropollutant destruction, CO2 mineralization/capture, sustainable polymers, green chemistry, environmental remediation.
+   - Target Titles: R&D Chemist, Cleantech Scientist, Development Chemist, Environmental Chemist, Process Development Chemist.
+   - Example Companies: Oxyle, Climeworks, Neustark, Eawag, Empa, Synhelion, Hitachi Zosen Inova.
+
+2. Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)
+   - Scope: Multi-step organic synthesis, medicinal chemistry, process research & development (PR&D), peptide/oligonucleotide synthesis, API scale-up, pilot plant operations.
+   - Target Titles: Associate Scientist, R&D Chemist, Synthetic Chemist, Process Chemist, Senior Research Associate, Laboratory Specialist.
+   - Example Companies: Lonza, Roche, Novartis, Siegfried, Dottikon ES, Bachem, Carbogen Amcis, SpiroChem, Philochem, Syngenta (Stein).
+
+3. Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)
+   - Scope: Development, optimization, and validation of chromatographic and spectroscopic analytical methods (HPLC, LC-MS, GC-MS, NMR, Karl Fischer). Characterization of active substances, surfactants, formulations, and impurities.
+   - Target Titles: Analytical Chemist, QC Analyst, Laboratory Specialist, Analytical Development Scientist, Characterization Specialist.
+   - Example Companies: Mettler-Toledo, Celerion, Clear Solutions Laboratories, Givaudan, Metrohm, CSL Behring, Bruker.
+
+4. Track 4: Life Sciences & Sustainability / Environmental Consulting
+   - Scope: Technical consulting, environmental risk assessment, chemical compliance (REACH, CLP), technology consulting, sustainability advisory for chemical & pharma industries.
+   - Target Titles: Life Sciences Consultant, Sustainability Consultant, Technology Consultant, Chemical Risk Consultant, Application Specialist.
+   - Example Companies: Capgemini Engineering, PwC Switzerland, Deloitte Life Sciences Advisory, Ramboll, Eraneos, Cambridge Consultants.
+
+5. Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)
+   - Scope: QA coordination, batch record review, deviation investigation, GMP oversight, regulatory operations support.
+   - Target Titles: QA Coordinator, Regulatory Affairs Specialist, Quality Assurance Specialist, Product Quality Reviewer.
+
+TARGET SENIORITY LEVEL:
+- Entry-Level & Early-Career Professional (0 to 4 years post-MSc effective experience).
+- Candidate has ~3.5 years of effective hands-on laboratory experience (2y PhD research + 6m ETH visiting researcher + 1y cleantech R&D startup).
+- INCLUDE: Associate Scientist, Research Associate, Scientist, R&D Chemist, Scientific Collaborator (Wissenschaftliche/r Mitarbeiter/in), Application Specialist, Industry Graduate / Rotational Programs.
+
+STRICT DEALBREAKERS (Score 1-3, is_relevant = false):
+1. Executive Leadership & Senior Management:
+   - Exclude: Director, Senior Director, Head of Department, Vice President, VP, Executive, Partner.
+   - Demands 5-10+ years of post-PhD corporate management experience.
+2. Legal, Patent & Non-Lab Fields:
+   - Exclude: Patent Attorney, Patent Agent, European Patent Attorney, Legal Counsel, Compliance Lawyer, Actuarial, Tax, Finance, Accounting.
+3. Academic Degrees & Apprenticeships:
+   - Exclude: Academic PhD positions (Doktorand / Doctoral Student), Master thesis, Bachelor thesis.
+   - Exclude: Apprenticeships (Lehrstelle, Laborant EFZ, Schnupperlehre).
+   - Exclude: Student Praktikum / University student internships (designed for enrolled undergraduate students).
+   - Exclude: Academic Postdoc positions / University Professorships.
+4. Geographic:
+   - Exclude: ANY position outside Switzerland (e.g. Boston, USA, Cambridge MA, Germany, UK, France, etc.). Must be within 60 minutes commute of Glattbrugg / Zurich (Basel SBB included).
+5. Language:
+   - Exclude: Roles requiring native/C2 German for legal/contract negotiations or public communications.

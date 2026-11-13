@@ -123,6 +123,10 @@ class Config:
         # --- Direct Career Pages ---
         self.DIRECT_CAREER_PAGES: List[Dict[str, str]] = raw.get("direct_career_pages", [])
 
+        # --- Candidate Profile ---
+        self.CANDIDATE_CV_PATH: Path = _PROJECT_ROOT / "config" / "candidate" / "cv.txt"
+        self.CANDIDATE_CAREER_PATH: Path = _PROJECT_ROOT / "config" / "candidate" / "career_directions.txt"
+
         # --- Keyword Filters ---
         filters = raw.get("filters", {})
         self.POSITIVE_ROLE_KEYWORDS = re.compile(
@@ -137,11 +141,29 @@ class Config:
         self.NEGATIVE_ROLE_KEYWORDS = re.compile(
             filters.get(
                 "negative_regex",
-                r"(accountant|finance|payroll|legal counsel|receptionist|chauffeur|"
-                r"hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupper)",
+                r"(accountant|finance|payroll|legal counsel|attorney|patent|receptionist|chauffeur|"
+                r"hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupperlehre|"
+                r"kaufmännisch|director|head of|vice president|\bvp\b|chief|partner|actuarial|tax\b|"
+                r"phd student|doktorand|master thesis|masterarbeit|bachelorarbeit)",
             ),
             re.IGNORECASE,
         )
+        self.FOREIGN_LOCATIONS_REGEX = re.compile(
+            r"\b(boston|cambridge\s*,\s*ma|usa\b|united states|uk\b|london|germany|munich|frankfurt|france|paris|singapore|china)\b",
+            re.IGNORECASE,
+        )
+
+    def get_candidate_cv(self) -> str:
+        """Returns the full candidate CV text."""
+        if self.CANDIDATE_CV_PATH.exists():
+            return self.CANDIDATE_CV_PATH.read_text(encoding="utf-8").strip()
+        return "Candidate: MSc Organic Chemistry with ~3.5 years R&D experience (ETH Zurich & Oxyle cleantech)."
+
+    def get_candidate_career_directions(self) -> str:
+        """Returns envisioned career directions and tracks."""
+        if self.CANDIDATE_CAREER_PATH.exists():
+            return self.CANDIDATE_CAREER_PATH.read_text(encoding="utf-8").strip()
+        return "Envisioned tracks: Cleantech R&D, Synthetic Organic Chemistry, Analytical HPLC/MS, Life Science Consulting."
 
 
 # ---------------------------------------------------------------------------

@@ -44,3 +44,11 @@ Use these milestones with the Antigravity agent in VS Code (`Cmd + L`).
 - [x] Wire automatic email delivery via Gmail SMTP (`--notify` / `--test-email`) into `zurich_chem_radar.py` and `run_daily.sh`.
 - [x] Filter for high-match positions (`match_score >= 7`) with direct dashboard link (`https://vnahodil.github.io/job_hunt/`).
 - [x] Safe local `.env` credential management (`.gitignore` protected).
+
+## Milestone 9: Full CV Matching, Envisioned Career Directions & Ingestion Guardrails 🔄
+- [ ] Ingestion Guardrails: Block foreign positions (Boston, USA, UK, Germany) and senior executive / non-lab titles (Director, Head of, VP, Partner, Patent Attorney, Legal Counsel, PhD studentships) at the scraper level.
+- [ ] Candidate Profile as Free Text: Store complete CV (`config/candidate/cv.txt`) and envisioned career trajectories (`config/candidate/career_directions.txt`) as clean, easily editable plain text.
+- [ ] Upgraded Gemini Evaluator: Feed full CV + career tracks into Gemini prompt, extracting track alignment, CV skill overlap, seniority suitability, and calibrated 1-10 match score.
+- [ ] Database Sanitation: Purge legacy heuristic phantom jobs (118 rows with generic "role at..." summaries) and foreign/executive positions from `chem_jobs.db`.
+- [ ] Dashboard Quality Floor: Enforce strict quality floor (`match_score >= 6 AND is_relevant = 1`) and add career track filtering.
+- [ ] Re-evaluation & Publish: Re-evaluate discovered vacancies with Gemini Flash and deploy updated dashboard without triggering emails.

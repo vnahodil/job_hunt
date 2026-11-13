@@ -15,7 +15,7 @@ def generate_html_dashboard(conn: sqlite3.Connection) -> None:
         SELECT job_hash, title, company, location, url, source, commute_mins, commute_mode,
                match_score, role_category, degree_fit, language_req, summary, date_found
         FROM jobs
-        WHERE is_relevant = 1 AND commute_mins <= ?
+        WHERE is_relevant = 1 AND match_score >= 6 AND commute_mins <= ?
         ORDER BY date_found DESC, match_score DESC, commute_mins ASC
         """,
         conn,
@@ -99,6 +99,12 @@ def generate_html_dashboard(conn: sqlite3.Connection) -> None:
 
     <div class="controls">
         <input type="text" id="searchInput" placeholder="Filter by title, company, location, PFAS, HPLC..." oninput="filterTable()" style="flex:1;">
+        <select id="scoreFilter" onchange="filterTable()">
+            <option value="7" selected>Top Fits Only (7+ / 10)</option>
+            <option value="8">Strong Matches (8+ / 10)</option>
+            <option value="9">Dream Roles (9-10 / 10)</option>
+            <option value="0">All Verified Roles (6+ / 10)</option>
+        </select>
         <select id="catFilter" onchange="filterTable()">
             <option value="">All Categories</option>
             <option value="R&D Lab">R&D Lab</option>
@@ -198,6 +204,7 @@ Please generate:
         const q = document.getElementById('searchInput').value.toLowerCase();
         const cat = document.getElementById('catFilter').value;
         const maxC = parseInt(document.getElementById('commuteFilter').value);
+        const minS = parseInt(document.getElementById('scoreFilter').value || '0');
         const hidden = JSON.parse(localStorage.getItem('hiddenJobs') || '[]');
 
         document.querySelectorAll('#jobsTable tbody tr').forEach(tr => {{
@@ -206,10 +213,12 @@ Please generate:
             const matchQ = text.includes(q);
             const matchCat = !cat || tr.dataset.category === cat;
             const matchC = parseInt(tr.dataset.commute) <= maxC;
-            tr.style.display = (matchQ && matchCat && matchC) ? '' : 'none';
+            const matchS = parseInt(tr.dataset.score) >= minS;
+            tr.style.display = (matchQ && matchCat && matchC && matchS) ? '' : 'none';
         }});
     }}
     loadState();
+    filterTable();
 </script>
 </body>
 </html>"""

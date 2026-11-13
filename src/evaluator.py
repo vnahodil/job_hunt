@@ -19,6 +19,14 @@ def evaluate_job_heuristic(title: str, company: str, desc: str, source: str) -> 
     text = f"{title} {company} {desc}".lower()
     t_lower = title.lower()
 
+    # 0. Foreign locations (Boston, USA, etc.)
+    if cfg.FOREIGN_LOCATIONS_REGEX.search(title) or cfg.FOREIGN_LOCATIONS_REGEX.search(desc[:500]):
+        return JobEvaluation(
+            is_relevant=False, match_score=1, role_category="Other",
+            degree_fit="Foreign Location", language_req="N/A",
+            one_line_summary="Position located outside Switzerland.",
+        )
+
     # 1. Hard exclusions: Academic Postdocs, Professorships, Apprenticeships, IT/Hardware
     if any(k in t_lower for k in ["postdoc", "postdoctoral", "professorship", "professor"]):
         return JobEvaluation(
@@ -147,47 +155,67 @@ def evaluate_job_heuristic(title: str, company: str, desc: str, source: str) -> 
 # ---------------------------------------------------------------------------
 
 def evaluate_job(client, title: str, company: str, location: str, desc: str, source: str) -> JobEvaluation:
-    """Uses Gemini 3.8 Flash (falling back to 3.5 Flash or heuristic)."""
+    """Uses Gemini 3.8 Flash (falling back to 3.5 Flash or heuristic) with Full CV & Career Tracks."""
+    # Fast guardrail: check foreign locations or hard negative keywords
+    t_clean = title.strip()
+    d_clean = (desc or "").strip()
+    if cfg.FOREIGN_LOCATIONS_REGEX.search(t_clean) or cfg.FOREIGN_LOCATIONS_REGEX.search(d_clean[:600]):
+        return JobEvaluation(
+            is_relevant=False, match_score=1, role_category="Other",
+            degree_fit="Foreign Location", language_req="N/A",
+            one_line_summary="Position located outside Switzerland.",
+        )
+    if cfg.NEGATIVE_ROLE_KEYWORDS.search(t_clean):
+        return JobEvaluation(
+            is_relevant=False, match_score=2, role_category="Other",
+            degree_fit="Disqualified Title", language_req="N/A",
+            one_line_summary="Executive, legal, patent, or non-target role excluded.",
+        )
+
     if not client:
         return evaluate_job_heuristic(title, company, desc, source)
 
-    desc_clean = desc.strip() if desc else ""
-    if len(desc_clean) < 30:
-        desc_clean = f"Position: {title} at {company} in {location}."
+    desc_clean = d_clean if len(d_clean) >= 30 else f"Position: {title} at {company} in {location}."
+
+    cv_text = cfg.get_candidate_cv()
+    career_directions_text = cfg.get_candidate_career_directions()
 
     prompt = f"""
-    Evaluate this Swiss job opening for the following candidate living in the Zurich area:
-    - Education: Master's (MSc) in Organic Chemistry + 2 years of PhD research in Czech Republic + 6 months exchange at ETH Zurich.
-    - Current Experience: 1-year research internship at Oxyle (ETH cleantech spin-off in Schlieren, catalytic water treatment / PFAS destruction).
-    - Total hands-on R&D experience: ~3.5 years.
-    - Target Career Level: Entry-level & early-career professional positions, associate scientist roles, and industry graduate/trainee programs.
-    - Languages: Full English proficiency (C1/C2), B1-B2 German (conversational lab German).
-    - Target Roles: Associate Scientist, Senior Research Associate, R&D Chemist, Organic/Synthetic Chemist, Analytical Chemist (HPLC, LC-MS, GC-MS, NMR), Process Development Chemist, Cleantech R&D Engineer, Scientific Collaborator (Wissenschaftliche/r Mitarbeiter/in), Application Specialist, Product Stewardship, Pharma QA/Operations, Life Science Consultant.
+    You are an expert Swiss life sciences career advisor evaluating a job opening for this candidate.
 
-    STRICT FILTERING & SCORING RULES:
-    1. EXCLUDE & HEAVILY PENALIZE (is_relevant=false, match_score 1-3):
-       - Master thesis / Bachelor thesis projects (she already holds an MSc)
-       - Academic PhD positions / Doctoral studentships (she already completed MSc + 2y PhD, not seeking a 4-year academic doctorate)
-       - Student Praktikum / University student internships aimed at enrolled students (e.g. Eawag lake ecology internship)
-       - Academic Postdoc positions (Postdoctoral Fellow / Postdoc) or University Professorships
-       - Apprenticeships (Lehrstelle, Laborant EFZ)
-       - Pure non-chemical engineering (mechanical, electrical, software/IT roles)
-       - Non-chemical biology/fieldwork (ecology, zoology, biodiversity, fish ecology)
-       - Senior Director / Executive leadership demanding completed PhD + 5+ years post-PhD industry management
-       - Roles explicitly demanding native/C2 German for legal/contract negotiations
-    2. FAVOR & BOOST (is_relevant=true, match_score 8-10):
-       - Entry-level and early-career professional roles: Associate Scientist, Research Associate, Chemist, R&D Specialist
-       - Industry graduate programs, rotational programs, and corporate trainee programs
-       - High-value industry R&D internships (e.g. Roche 12-month LC-MS Bioanalytics internship, Syngenta chemistry research internship) designed as industry career entry points
-       - Roles matching her hands-on skills: Organic synthesis, reaction scouting, catalysis, analytical chemistry (HPLC, LC-MS, NMR), water treatment / PFAS / cleantech R&D
-       - Roles requiring BSc/MSc + experience, OR roles stating "PhD or equivalent industrial/research experience"
-       - Working language English or German B1-B2 acceptable.
+    === CANDIDATE FULL CV ===
+    {cv_text}
 
+    === ENVISIONED CAREER DIRECTIONS & TARGET TRACKS ===
+    {career_directions_text}
+
+    === JOB VACANCY TO EVALUATE ===
     Job Title: {title}
     Company: {company}
     Location: {location}
     Source: {source}
-    Description: {desc_clean[:5000]}
+    Description:
+    {desc_clean[:5500]}
+
+    === EVALUATION GUIDELINES ===
+    1. EXCLUDE & REJECT (is_relevant=false, match_score 1-3):
+       - Executive & Senior Leadership: Director, Senior Director, Head of Department, VP, Chief (demands completed PhD + 5+ years post-PhD corporate management).
+       - Legal, Patent & Non-Lab Fields: Patent Attorney, Patent Agent, Legal Counsel, Actuarial, Finance, Tax.
+       - Academic Degrees & Trainees: Academic PhD positions (Doktorand), Master / Bachelor thesis projects, Vocational Apprenticeships (Lehrstelle EFZ), Student Praktikum.
+       - Foreign Locations: Positions located outside Switzerland (e.g. Boston, USA, Germany, UK).
+       - Languages: Roles explicitly demanding native/C2 German for legal/contract negotiations.
+
+    2. FAVOR & BOOST (is_relevant=true, match_score 8-10):
+       - Directly aligns with one of her 5 Envisioned Career Tracks (especially Track 1 Cleantech/Environmental R&D, Track 2 Synthetic Chemistry, Track 3 Analytical HPLC/MS, Track 4 Sustainability Consulting).
+       - Matches hands-on skills in her CV: Organic synthesis, reaction scouting, catalysis, water treatment / PFAS destruction, HPLC, LC-MS, GC-MS, NMR, process scale-up.
+       - Entry-level to early-career level (~0 to 4 years post-MSc effective experience): Associate Scientist, Research Associate, Chemist, R&D Specialist, Application Specialist, Industry Graduate Programs.
+       - Working language English (C1/C2) or conversational lab German (B1-B2).
+
+    3. OUTPUT REQUIREMENTS:
+       - role_category: One of ['R&D Lab', 'Cleantech', 'Analytical', 'Pharma QA/Reg', 'Consulting/App', 'Process/Industry'].
+       - degree_fit: e.g. "MSc / PhD Ideal", "BSc/MSc Suitable", "Overqualified (PhD Req)", "Non-chemical".
+       - language_req: e.g. "English (C1)", "German (B1-B2)", "German (C1/C2 - Reject)".
+       - one_line_summary: A concise statement highlighting specific CV overlap (e.g. "Direct fit for her 1y Oxyle catalytic water treatment & HPLC-MS PFAS experience.") or the specific reason for disqualification.
     """
 
     models_to_try = [

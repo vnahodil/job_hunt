@@ -70,6 +70,8 @@ def fetch_curated_career_pages() -> List[Dict]:
                     continue
                 if not cfg.POSITIVE_ROLE_KEYWORDS.search(text) or cfg.NEGATIVE_ROLE_KEYWORDS.search(text):
                     continue
+                if cfg.FOREIGN_LOCATIONS_REGEX.search(text) or cfg.FOREIGN_LOCATIONS_REGEX.search(href):
+                    continue
 
                 # Skip known marketing or generic titles
                 if t_lower in IGNORED_EXACT_TITLES:
