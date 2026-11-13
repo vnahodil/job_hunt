@@ -1,0 +1,438 @@
+# ============================================================================
+# ZURICH CHEMISTRY & CLEANTECH JOB RADAR - MASTER TARGET CONFIGURATION
+# Candidate: MSc Organic Chemistry + 2y PhD + 6m ETH + 1y Oxyle (Schlieren)
+# ============================================================================
+
+commute_settings:
+  home_origin: "Glattbrugg"
+  max_commute_mins: 60
+  arrival_time: "08:00"
+
+  # Door-to-door driving/SBB overrides (in minutes) from Glattbrugg / Opfikon (8152)
+  # Prevents SBB transfer penalties from rejecting nearby industrial parks
+  driving_overrides:
+    # --- Immediate Local & Airport Corridor (5-15 mins) ---
+    glattbrugg: 5
+    opfikon: 5
+    kloten: 8
+    wallisellen: 10
+    oerlikon: 10
+    dübendorf: 12
+    dubendorf: 12
+    dietlikon: 12
+    regensdorf: 14
+    bülach: 15
+    zürich: 15
+    zurich: 15
+    kemptthal: 15
+    volketswil: 15
+
+    # --- Schlieren, Limmattal, Furttal & Winterthur (16-25 mins) ---
+    otelfingen: 16
+    illnau: 18
+    effretikon: 15
+    schlieren: 20
+    winterthur: 20
+    fehraltorf: 20
+    urdorf: 22
+    dietikon: 22
+    spreinbach: 24
+    greifensee: 16
+    uster: 20
+    rafz: 22
+    birmensdorf: 24
+
+    # --- Schaffhausen, Lake Zurich & Aargau East (25-35 mins) ---
+    baden: 25
+    dättwil: 25
+    würenlos: 20
+    wettingen: 24
+    turgi: 28
+    brugg: 30
+    würenlingen: 30
+    villigen: 33
+    schaffhausen: 30
+    neuhausen: 30
+    aadorf: 28
+    frauenfeld: 30
+    horgen: 28
+    wädenswil: 30
+    männedorf: 30
+    stäfa: 32
+    hombrechtikon: 32
+    lenzburg: 30
+    dottikon: 32
+    hunzenschwil: 34
+
+    # --- Aargau West, Fricktal, Zug & Basel Border (35-60 mins) ---
+    baar: 35
+    zug: 38
+    rotkreuz: 40
+    aarau: 38
+    suhr: 36
+    stein: 40
+    stein ag: 40
+    münchwilen: 42
+    munchwilen: 42
+    sisseln: 42
+    zofingen: 45
+    rheinfelden: 46
+    kaiseraugst: 48
+    augst: 48
+    pratteln: 52
+    muttenz: 55
+    liestal: 54
+    bubendorf: 56
+    aesch: 60
+    basel: 60
+    allschwil: 62
+    flawil: 45
+
+# ============================================================================
+# 2. AGGREGATOR QUERIES (JobSpy: Indeed CH, LinkedIn, Google Jobs)
+# ============================================================================
+aggregator_queries:
+  - "Organic Chemistry"
+  - "Synthetic Chemist"
+  - "Research Associate Chemistry"
+  - "Associate Scientist Chemistry"
+  - "R&D Chemist"
+  - "Analytical Chemist"
+  - "Process Development Chemist"
+  - "Chemiker"
+  - "Wissenschaftlicher Mitarbeiter Chemie"
+  - "Chemical Engineer R&D"
+  - "Application Specialist Chemistry"
+  - "Water Treatment Engineer Chemistry"
+  - "PFAS Catalysis"
+  - "Formulation Chemist"
+  - "Quality Assurance Chemist"
+
+# ============================================================================
+# 3. WORKDAY DIRECT JSON API ENDPOINTS (Zero-Browser Fast Polling)
+# ============================================================================
+workday_targets:
+  - company: "Givaudan"
+    default_location: "Kemptthal"
+    api_url: "https://givaudan.wd3.myworkdayjobs.com/wday/cxs/givaudan/Givaudan_Careers/jobs"
+    site_url: "https://givaudan.wd3.myworkdayjobs.com/en-US/Givaudan_Careers"
+    search_terms: ["Chemistry", "Analytical", "Scientist", "Kemptthal", "Zurich"]
+
+  - company: "Lonza"
+    default_location: "Basel / Stein"
+    api_url: "https://lonza.wd3.myworkdayjobs.com/wday/cxs/lonza/Lonza_Careers/jobs"
+    site_url: "https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers"
+    search_terms: ["Chemist", "Associate Scientist", "Analytical", "Organic", "Stein", "Basel"]
+
+  - company: "Novartis"
+    default_location: "Basel / Stein"
+    api_url: "https://novartis.wd3.myworkdayjobs.com/wday/cxs/novartis/Novartis_Careers/jobs"
+    site_url: "https://novartis.wd3.myworkdayjobs.com/en-US/Novartis_Careers"
+    search_terms: ["Synthetic", "Organic Chemistry", "Scientific Associate", "Analytical", "Chemical Development"]
+
+  - company: "Roche"
+    default_location: "Basel / Rotkreuz"
+    api_url: "https://roche.wd3.myworkdayjobs.com/wday/cxs/roche/roche-ext/jobs"
+    site_url: "https://roche.wd3.myworkdayjobs.com/en-US/roche-ext"
+    search_terms: ["Chemist", "Scientist Chemistry", "Analytical", "Small Molecules", "Rotkreuz"]
+
+  - company: "Takeda"
+    default_location: "Zürich (Glattpark)"
+    api_url: "https://takeda.wd3.myworkdayjobs.com/wday/cxs/takeda/External/jobs"
+    site_url: "https://takeda.wd3.myworkdayjobs.com/en-US/External"
+    search_terms: ["Zurich", "Quality", "Analytical", "Chemistry", "Scientist"]
+
+  - company: "Clariant"
+    default_location: "Muttenz"
+    api_url: "https://clariant.wd3.myworkdayjobs.com/wday/cxs/clariant/Clariant_Jobs/jobs"
+    site_url: "https://clariant.wd3.myworkdayjobs.com/en-US/Clariant_Jobs"
+    search_terms: ["Chemist", "R&D", "Catalyst", "Application", "Muttenz"]
+
+  - company: "CSL Behring"
+    default_location: "Glattbrugg / Bern"
+    api_url: "https://csl.wd1.myworkdayjobs.com/wday/cxs/csl/CSL_External/jobs"
+    site_url: "https://csl.wd1.myworkdayjobs.com/en-US/CSL_External"
+    search_terms: ["Zurich", "Glattbrugg", "Quality", "Scientist", "Analytical"]
+
+# ============================================================================
+# 4. SWISS RESEARCH INSTITUTES & ECOSYSTEM HUBS
+# ============================================================================
+institutes_and_hubs:
+  eth_spinoff_directory_url: "https://entrepreneurship.ethz.ch/startup-stories/explore-startup-portraits-and-success-stories/uebersicht-eth-spin-offs.html"
+  eth_target_departments:
+    - "D-CHAB"  # Chemistry and Applied Biosciences
+    - "D-MATL"  # Materials
+    - "D-BSSE"  # Biosystems Science and Engineering (Basel)
+    - "D-BAUG"  # Civil, Environmental and Geomatic Engineering
+    - "D-USYS"  # Environmental Systems Science
+    - "D-BIOL"  # Biology
+    - "D-HEST"  # Health Sciences and Technology
+    - "D-EAPS"  # Earth and Planetary Sciences
+
+  portals:
+    - name: "Eawag (Refline)"
+      location: "Dübendorf"
+      url: "https://apply.refline.ch/673277/search.html"
+    - name: "Empa (Refline)"
+      location: "Dübendorf"
+      url: "https://apply.refline.ch/673276/search.html"
+    - name: "Paul Scherrer Institute (PSI)"
+      location: "Villigen"
+      url: "https://www.psi.ch/en/hr/job-opportunities"
+    - name: "Bio-Technopark Schlieren"
+      location: "Schlieren"
+      url: "https://www.bio-technopark.ch/en/jobs-englisch/"
+    - name: "ETH Get Hired"
+      location: "Zürich"
+      url: "https://eth-gethired.ch/en/jobs/"
+    - name: "JoinUp (ETH Startup Board)"
+      location: "Zürich"
+      url: "https://joinup.ch/"
+
+# ============================================================================
+# 5. CURATED DIRECT COMPANY WATCHLIST (46 TARGET EMPLOYERS BY CORRIDOR)
+# ============================================================================
+direct_career_pages:
+
+  # --- CORRIDOR A: Schlieren, Otelfingen & Limmattal (15-22 mins) ---
+  - company: "Oxyle"
+    location: "Schlieren"
+    sector: "Cleantech / PFAS Water Treatment"
+    url: "https://oxyle.ch/careers/"
+
+  - company: "CellX Biosolutions"
+    location: "Schlieren"
+    sector: "Cleantech / PFAS Bioremediation"
+    url: "https://www.cellxbiosolutions.com/careers"
+
+  - company: "HeiQ Materials"
+    location: "Schlieren"
+    sector: "Specialty Materials & Polymers"
+    url: "https://www.heiq.com/about-heiq/careers"
+
+  - company: "Philochem AG"
+    location: "Otelfingen"
+    sector: "Small Molecule Drug Discovery & Mass Spec"
+    url: "https://www.philochem.ch/careers/open-positions/"
+
+  - company: "Molecular Partners"
+    location: "Schlieren"
+    sector: "Biotech R&D"
+    url: "https://www.molecularpartners.com/careers/"
+
+  - company: "InSphero"
+    location: "Schlieren"
+    sector: "Biotech / 3D Assay R&D"
+    url: "https://insphero.com/company/careers/"
+
+  - company: "Cutiss"
+    location: "Schlieren"
+    sector: "Biotech / Bioengineering"
+    url: "https://cutiss.swiss/careers/"
+
+  - company: "Biognosys"
+    location: "Schlieren"
+    sector: "Proteomics & Mass Spectrometry"
+    url: "https://biognosys.com/about-us/careers/"
+
+  - company: "Kuros Biosciences"
+    location: "Schlieren"
+    sector: "Biomaterials & Life Sciences"
+    url: "https://kurosbiosciences.com/careers/"
+
+  - company: "Mettler-Toledo"
+    location: "Urdorf / Greifensee"
+    sector: "Analytical & Process Instrumentation"
+    url: "https://www.mt.com/ch/en/home/site_content/career.html"
+
+  # --- CORRIDOR B: Zurich, Glattbrugg, Dübendorf, Kemptthal & Lake Zurich (5-30 mins) ---
+  - company: "Climeworks"
+    location: "Zürich Oerlikon"
+    sector: "Cleantech / Sorbent & Process Chemistry"
+    url: "https://climeworks.com/careers"
+
+  - company: "Synhelion"
+    location: "Zürich"
+    sector: "Cleantech / Solar Fuels & Catalysis"
+    url: "https://synhelion.com/careers"
+
+  - company: "Neustark"
+    location: "Zürich / Bern"
+    sector: "Cleantech / CO2 Mineralization"
+    url: "https://careers.neustark.com/"
+
+  - company: "Haelixa"
+    location: "Kemptthal"
+    sector: "ETH Spin-Off / DNA Chemical Markers"
+    url: "https://www.haelixa.com/about-us/careers/"
+
+  - company: "Sika"
+    location: "Zürich"
+    sector: "Polymer & Construction Chemistry R&D"
+    url: "https://che.sika.com/de/karriere/offene-stellen.html"
+
+  - company: "Celerion"
+    location: "Fehraltorf"
+    sector: "CRO Bioanalytics & Mass Spec"
+    url: "https://www.celerion.com/careers"
+
+  - company: "Givaudan"
+    location: "Kemptthal / Dübendorf"
+    sector: "Flavor & Fragrance Organic/Analytical R&D"
+    url: "https://jobs.givaudan.com/"
+
+  - company: "Tecan"
+    location: "Männedorf"
+    sector: "Lab Automation & Application Specialists"
+    url: "https://www.tecan.com/careers"
+
+  - company: "Sensirion"
+    location: "Stäfa"
+    sector: "Chemical & Environmental Sensors R&D"
+    url: "https://sensirion.com/company/career/job-openings/"
+
+  - company: "Vifor / CSL Vifor"
+    location: "Glattbrugg"
+    sector: "Pharma QA, Regulatory & CMC"
+    url: "https://www.csl.com/careers"
+
+  # --- CORRIDOR C: Winterthur, Schaffhausen & Eastern Corridor (20-45 mins) ---
+  - company: "Sulzer Chemtech"
+    location: "Winterthur"
+    sector: "Polymer Recycling, Separation & Purification R&D"
+    url: "https://www.sulzer.com/en/shared/careers"
+
+  - company: "Halag Chemie"
+    location: "Aadorf / Winterthur"
+    sector: "Formulation, Hygiene & Eco Chemistry"
+    url: "https://www.halagchemie.ch/ueber-uns/offene-stellen/"
+
+  - company: "Johnson & Johnson (Cilag)"
+    location: "Schaffhausen / Zug"
+    sector: "API Small Molecules & Analytical Development"
+    url: "https://www.careers.jnj.com/en/jobs/?search=Chemistry&country=Switzerland"
+
+  - company: "BÜCHI Labortechnik"
+    location: "Flawil"
+    sector: "Organic Synthesis & Evaporation Equipment / App Specialist"
+    url: "https://www.buchi.com/en/jobs"
+
+  - company: "Killer Interior / Keller Chemie / Frike Group"
+    location: "Mönchaltorf / Wetzikon"
+    sector: "Chemical Formulation & Aerosols"
+    url: "https://www.frike-group.com/de/ueber-uns/jobs/"
+
+  # --- CORRIDOR D: Aargau, Baden, Stein & Zofingen Synthesis Belt (25-48 mins) ---
+  - company: "Dottikon Exclusive Synthesis"
+    location: "Dottikon"
+    sector: "CDMO Organic Synthesis & Process Development"
+    url: "https://dottikon.com/en/careers/job-openings/"
+
+  - company: "Carbogen Amcis"
+    location: "Aarau / Hunzenschwil / Bubendorf"
+    sector: "CDMO Synthetic Organic Chemistry & Analytics"
+    url: "https://www.carbogen-amcis.com/careers/open-positions"
+
+  - company: "Siegfried AG"
+    location: "Zofingen"
+    sector: "CDMO Drug Substances (Small Molecules) & CMC"
+    url: "https://www.siegfried.ch/de/careers/"
+
+  - company: "Syngenta Crop Protection"
+    location: "Stein / Münchwilen"
+    sector: "Organic Synthesis, Formulation & Process Chemistry"
+    url: "https://www.syngenta.ch/en/career-and-collaboration-opportunities-0"
+
+  - company: "dsm-firmenich"
+    location: "Kaiseraugst"
+    sector: "Organic Synthesis, Vitamins, Perfumery & Analytics"
+    url: "https://jobs.dsm-firmenich.com/careers"
+
+  - company: "Solvias"
+    location: "Kaiseraugst"
+    sector: "CRO Solid-State Chemistry, Catalysis & Analytics"
+    url: "https://www.solvias.com/careers/"
+
+  - company: "ABB Corporate Research"
+    location: "Baden-Dättwil"
+    sector: "Materials, Insulation Chemistry & Cleantech R&D"
+    url: "https://careers.abb/global/en/search-results?keywords=Chemistry%20Switzerland"
+
+  - company: "Axpo (Power-to-X / Hydrogen)"
+    location: "Baden"
+    sector: "Energy & Cleantech Consulting / Engineering"
+    url: "https://www.axpo.com/ch/en/career.html"
+
+  # --- CORRIDOR E: Basel & Northwestern Pharma/Chemistry Hub (50-60 mins) ---
+  - company: "SpiroChem"
+    location: "Basel"
+    sector: "ETH Spin-Off CRO / Synthetic & Medicinal Organic Chemistry"
+    url: "https://spirochem.com/careers.html"
+
+  - company: "Bachem"
+    location: "Bubendorf"
+    sector: "Peptide & Oligonucleotide Organic Synthesis / QC"
+    url: "https://careers.bachem.com/"
+
+  - company: "Clariant"
+    location: "Muttenz"
+    sector: "Specialty Chemicals & Catalysis"
+    url: "https://www.clariant.com/en/Careers/Early-careers"
+
+  - company: "Arxada"
+    location: "Basel"
+    sector: "Specialty Chemicals & Microbial Control"
+    url: "https://www.arxada.com/en/careers"
+
+  - company: "Monte Rosa Therapeutics"
+    location: "Basel"
+    sector: "Small Molecule Degraders / Medicinal Chemistry"
+    url: "https://www.monterosatx.com/careers/"
+
+  - company: "Idorsia Pharmaceuticals"
+    location: "Allschwil"
+    sector: "Small Molecule Drug Discovery & Process Chemistry"
+    url: "https://www.idorsia.com/careers/job-opportunities"
+
+  - company: "CordenPharma"
+    location: "Liestal / Muttenz"
+    sector: "CDMO Small Molecules, Lipids & Peptides"
+    url: "https://cordenpharma.com/careers/"
+
+  - company: "Huntsman Advanced Materials"
+    location: "Basel"
+    sector: "Polymers, Resins & Synthesis R&D"
+    url: "https://www.huntsman.com/careers"
+
+  - company: "Pentapharm"
+    location: "Aesch"
+    sector: "Active Pharmaceutical Ingredients & Diagnostics"
+    url: "https://www.pentapharm.com/careers/"
+
+  # --- CORRIDOR F: Life Science & Cleantech Consulting (Zurich / Basel) ---
+  - company: "Eraneos Switzerland"
+    location: "Zürich / Basel"
+    sector: "Life Sciences, Pharma & Chemical Management Consulting"
+    url: "https://www.eraneos.com/ch/en/careers/jobs/"
+
+  - company: "Alcimed"
+    location: "Zürich / Basel"
+    sector: "Innovation Consulting (Chemistry, Cleantech, Pharma)"
+    url: "https://www.alcimed.com/en/careers/"
+
+  - company: "wega Informatik"
+    location: "Basel / Zürich"
+    sector: "Lab Informatics, LIMS & Scientific Consulting"
+    url: "https://www.wega-it.com/en/career/vacancies/"
+
+  - company: " Ramboll Switzerland (Environment & Health)"
+    location: "Zürich"
+    sector: "PFAS Soil/Water Remediation & Chemical Risk Consulting"
+    url: "https://www.ramboll.com/careers"
+
+# ============================================================================
+# 6. KEYWORD REGEX PATTERNS FOR LINK PRE-FILTERING
+# ============================================================================
+filters:
+  positive_regex: "(chem|scien|research|r&d|analyt|synthe|labor|lab\\b|process|formulat|cataly|pfas|water|remediat|material|polymer|peptid|small molecule|quality|qa\\b|qc\\b|cmc|regulatory|application|consultant|engineer|wissenschaft|mitarbeiter|specialist|associate|intern)"
+  negative_regex: "(accountant|finance|payroll|legal counsel|receptionist|chauffeur|hr manager|recruiter|full stack|frontend|ios developer|android|lehrstelle|schnupperlehre|kaufmännisch)"

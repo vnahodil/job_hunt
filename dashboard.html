@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Zurich Chemistry & Cleantech Job Radar</title>
+<style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; background: var(--card); padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
+    input, select, button { background: #0f172a; color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: #0f172a; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    tr:hover { background: rgba(56, 189, 248, 0.06); }
+    tr.applied { background: rgba(34, 197, 94, 0.12) !important; }
+    .job-title { color: var(--accent); font-weight: 600; text-decoration: none; font-size: 1rem; }
+    .job-title:hover { text-decoration: underline; }
+    .job-summary { color: var(--muted); font-size: 0.84rem; margin-top: 4px; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; }
+    .score-high { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .score-med { background: rgba(250, 204, 21, 0.2); color: #facc15; }
+    .score-low { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+    .commute-fast { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+    .commute-mid { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; }
+    .commute-far { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+    .tag { background: #334155; padding: 3px 7px; border-radius: 4px; font-size: 0.78rem; }
+    .muted { color: var(--muted); }
+    .btn-action { cursor: pointer; background: #1e3a8a; border-color: #1d4ed8; }
+    .btn-hide { cursor: pointer; color: #f87171; }
+</style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🧪 Zurich Chemistry & Cleantech Job Radar</h1>
+            <small class="muted">Origin: Glattbrugg (Max ~60m) | Profile: MSc Organic Chemistry + 3.5y R&D (ETH / Oxyle) | Updated: 2026-11-13 15:25</small>
+        </div>
+        <div><strong>71</strong> Matching Roles</div>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Filter by title, company, location, PFAS, HPLC..." oninput="filterTable()" style="flex:1;">
+        <select id="catFilter" onchange="filterTable()">
+            <option value="">All Categories</option>
+            <option value="R&D Lab">R&D Lab</option>
+            <option value="Cleantech">Cleantech</option>
+            <option value="Analytical">Analytical</option>
+            <option value="Pharma QA/Reg">Pharma QA/Reg</option>
+            <option value="Consulting/App">Consulting/App</option>
+        </select>
+        <select id="commuteFilter" onchange="filterTable()">
+            <option value="999">All Commutes (<= 60m)</option>
+            <option value="25"><= 25 mins (Zurich / Schlieren / Dübendorf / Winterthur)</option>
+            <option value="45"><= 45 mins (+ Zug / Baden / Schaffhausen / Stein)</option>
+        </select>
+        <button onclick="resetHidden()">Restore Hidden Rows</button>
+    </div>
+
+    <table id="jobsTable">
+        <thead>
+            <tr>
+                <th>Fit</th>
+                <th>Role & Match Summary</th>
+                <th>Company</th>
+                <th>Commute from Glattbrugg</th>
+                <th>Category</th>
+                <th>Degree & Language</th>
+                <th>Found</th>
+                <th>Track</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr data-id="bd025fd62bb0" data-category="R&D Lab" data-score="8" data-commute="15">
+            <td><span class="badge score-high">8/10</span></td>
+            <td>
+                <a href="https://synhelion.com/our-products/synthetic-diesel" target="_blank" rel="noopener" class="job-title">Synthetic diesel</a>
+                <div class="job-summary">R&D Lab role at Synhelion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Synhelion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('bd025fd62bb0')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('bd025fd62bb0')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="bdcf35d2b171" data-category="R&D Lab" data-score="8" data-commute="15">
+            <td><span class="badge score-high">8/10</span></td>
+            <td>
+                <a href="https://synhelion.com/our-products/synthetic-gasoline" target="_blank" rel="noopener" class="job-title">Synthetic gasoline</a>
+                <div class="job-summary">R&D Lab role at Synhelion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Synhelion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('bdcf35d2b171')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('bdcf35d2b171')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="11c093274807" data-category="R&D Lab" data-score="8" data-commute="15">
+            <td><span class="badge score-high">8/10</span></td>
+            <td>
+                <a href="https://synhelion.com/our-products/synthetic-wax" target="_blank" rel="noopener" class="job-title">Synthetic waxes</a>
+                <div class="job-summary">R&D Lab role at Synhelion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Synhelion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('11c093274807')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('11c093274807')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="1165ba419181" data-category="R&D Lab" data-score="8" data-commute="36">
+            <td><span class="badge score-high">8/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/applications_and_solutions/genomics/synthetic_biology" target="_blank" rel="noopener" class="job-title">Synthetic Biology</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('1165ba419181')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('1165ba419181')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c4784910c464" data-category="R&D Lab" data-score="8" data-commute="60">
+            <td><span class="badge score-high">8/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Process-Modelling---Simulation-Lead---Synthetic-Molecules-Technical-Development_202610-127828" target="_blank" rel="noopener" class="job-title">Process Modelling & Simulation Lead – Synthetic Molecules Technical Development</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c4784910c464')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c4784910c464')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ab1605c85e26" data-category="Analytical" data-score="7" data-commute="20">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/services/bioanalytical-science-services/" target="_blank" rel="noopener" class="job-title">Bioanalytical Sciences</a>
+                <div class="job-summary">Analytical role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ab1605c85e26')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ab1605c85e26')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="cdb6e4853cae" data-category="Analytical" data-score="7" data-commute="36">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://diagnostics.tecan.com/mass-spec-solutions-overview" target="_blank" rel="noopener" class="job-title">Analytical chemistry</a>
+                <div class="job-summary">Analytical role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('cdb6e4853cae')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('cdb6e4853cae')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="fe2e5ad433fe" data-category="Analytical" data-score="7" data-commute="36">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://diagnostics.tecan.com/pre-and-post-analytical-automation" target="_blank" rel="noopener" class="job-title">Pre- and post-analytical automation</a>
+                <div class="job-summary">Analytical role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('fe2e5ad433fe')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('fe2e5ad433fe')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="9805dd1abb0b" data-category="Analytical" data-score="7" data-commute="36">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://diagnostics.tecan.com/pre-and-post-analytical-automation" target="_blank" rel="noopener" class="job-title">Pre- and post-analytical processing</a>
+                <div class="job-summary">Analytical role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('9805dd1abb0b')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('9805dd1abb0b')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="adc85c9411f3" data-category="Analytical" data-score="7" data-commute="60">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Internship-LC-MS-Bioanalytics--Basel--6-months-_202611-128078" target="_blank" rel="noopener" class="job-title">Internship LC-MS Bioanalytics (Basel, 6 months)</a>
+                <div class="job-summary">Analytical role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('adc85c9411f3')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('adc85c9411f3')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6b243fd6846d" data-category="Analytical" data-score="7" data-commute="60">
+            <td><span class="badge score-med">7/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/CMC-Expert-Analytical-Development-focus-Parenterals-Devices_202607-119705-1" target="_blank" rel="noopener" class="job-title">CMC Expert Analytical Development focus Parenterals&Devices</a>
+                <div class="job-summary">Analytical role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">Analytical</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('6b243fd6846d')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('6b243fd6846d')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c9faeeea7e33" data-category="R&D Lab" data-score="6" data-commute="15">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://jobs.ashbyhq.com/proxima-fusion/73c4994c-f896-4849-954b-6b9e6f6689f9?utm_source=eYAKMQX8Z1" target="_blank" rel="noopener" class="job-title">R&D Facility & Safety Specialist</a>
+                <div class="job-summary">R&D Lab role at Proxima Fusion (JobSpy (indeed)); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Proxima Fusion</strong><br><small class="muted">JobSpy (indeed)</small></td>
+            <td><span class="badge commute-fast">Zürich, ZH, Switzerland (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c9faeeea7e33')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c9faeeea7e33')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6d1686e48dda" data-category="R&D Lab" data-score="6" data-commute="15">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://climeworks.com/jobs/science-manager-nature-based-solutions-80-100" target="_blank" rel="noopener" class="job-title">Science Manager – Nature-based Solutions (80-100%)</a>
+                <div class="job-summary">R&D Lab role at Climeworks (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Climeworks</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich Oerlikon (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('6d1686e48dda')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('6d1686e48dda')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="5fabefc095e7" data-category="R&D Lab" data-score="6" data-commute="15">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://climeworks.com/jobs/lead-electrical-engineer-100" target="_blank" rel="noopener" class="job-title">Lead Electrical Engineer (100%)</a>
+                <div class="job-summary">R&D Lab role at Climeworks (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Climeworks</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich Oerlikon (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('5fabefc095e7')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('5fabefc095e7')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="1b79976a79fc" data-category="R&D Lab" data-score="6" data-commute="15">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://climeworks.com/jobs/principal-design-engineer-mechanical-equipment-80-100" target="_blank" rel="noopener" class="job-title">Principal Design Engineer - Mechanical Equipment (80-100%)</a>
+                <div class="job-summary">R&D Lab role at Climeworks (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Climeworks</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich Oerlikon (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('1b79976a79fc')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('1b79976a79fc')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c2b1c760d9ca" data-category="R&D Lab" data-score="6" data-commute="15">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://climeworks.com/jobs/intern-in-sorbent-structures-80-100" target="_blank" rel="noopener" class="job-title">Intern in Sorbent Structures (80-100%)</a>
+                <div class="job-summary">R&D Lab role at Climeworks (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Climeworks</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Zürich Oerlikon (~15m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c2b1c760d9ca')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c2b1c760d9ca')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c9ebc2edccba" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://kurosbio.com/careers/" target="_blank" rel="noopener" class="job-title">Kuros Biosciences AG</a>
+                <div class="job-summary">R&D Lab role at Bio-Technopark Schlieren Member (Bio-Technopark Schlieren); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Bio-Technopark Schlieren Member</strong><br><small class="muted">Bio-Technopark Schlieren</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c9ebc2edccba')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c9ebc2edccba')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="badf61e69da2" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="http://www.lifescience-youngscientists.uzh.ch/en.html" target="_blank" rel="noopener" class="job-title">Life Science Zurich – Young Scientist Network</a>
+                <div class="job-summary">R&D Lab role at Bio-Technopark Schlieren Member (Bio-Technopark Schlieren); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Bio-Technopark Schlieren Member</strong><br><small class="muted">Bio-Technopark Schlieren</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('badf61e69da2')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('badf61e69da2')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="08a7dcf1b7c8" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.bio-technopark.ch/en/bio-technopark/collaboration-and-memberships/" target="_blank" rel="noopener" class="job-title">Collaboration and Memberships</a>
+                <div class="job-summary">R&D Lab role at Bio-Technopark Schlieren Member (Bio-Technopark Schlieren); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Bio-Technopark Schlieren Member</strong><br><small class="muted">Bio-Technopark Schlieren</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('08a7dcf1b7c8')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('08a7dcf1b7c8')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3e374b7fc7c7" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.bio-technopark.ch/en/leasing/offices-and-laboratories/" target="_blank" rel="noopener" class="job-title">Offices and Laboratories</a>
+                <div class="job-summary">R&D Lab role at Bio-Technopark Schlieren Member (Bio-Technopark Schlieren); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Bio-Technopark Schlieren Member</strong><br><small class="muted">Bio-Technopark Schlieren</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('3e374b7fc7c7')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('3e374b7fc7c7')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="75e7b143a9b2" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.bio-technopark.ch/en/services/zurich-a-life-sciences-hotspot/" target="_blank" rel="noopener" class="job-title">Zurich: a Life Sciences Hotspot</a>
+                <div class="job-summary">R&D Lab role at Bio-Technopark Schlieren Member (Bio-Technopark Schlieren); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Bio-Technopark Schlieren Member</strong><br><small class="muted">Bio-Technopark Schlieren</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('75e7b143a9b2')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('75e7b143a9b2')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="9f8633389274" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.domains.ch/en/WebApplications/16/Joomla" target="_blank" rel="noopener" class="job-title">Content management system and Web application framework</a>
+                <div class="job-summary">R&D Lab role at CellX Biosolutions (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>CellX Biosolutions</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('9f8633389274')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('9f8633389274')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6775399d68b3" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.molecularpartners.com/about-us/#scientificadvisoryboard" target="_blank" rel="noopener" class="job-title">Scientific Advisory Board</a>
+                <div class="job-summary">R&D Lab role at Molecular Partners (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Molecular Partners</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('6775399d68b3')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('6775399d68b3')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a742d448937b" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.molecularpartners.com/darpin-science/" target="_blank" rel="noopener" class="job-title">DARPin Science</a>
+                <div class="job-summary">R&D Lab role at Molecular Partners (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Molecular Partners</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('a742d448937b')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('a742d448937b')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e3401c9d3b41" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.molecularpartners.com/darpin-science/#scientific-publication" target="_blank" rel="noopener" class="job-title">Scientific Publications & Presentations</a>
+                <div class="job-summary">R&D Lab role at Molecular Partners (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Molecular Partners</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('e3401c9d3b41')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('e3401c9d3b41')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="bd5bc8ea2b0e" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.molecularpartners.com/investors/scientific-documents/" target="_blank" rel="noopener" class="job-title">Scientific Documents</a>
+                <div class="job-summary">R&D Lab role at Molecular Partners (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Molecular Partners</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('bd5bc8ea2b0e')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('bd5bc8ea2b0e')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="4cc28ae17251" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://insphero.com/resources/?type=application-note" target="_blank" rel="noopener" class="job-title">Application Notes</a>
+                <div class="job-summary">R&D Lab role at InSphero (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>InSphero</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Schlieren (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('4cc28ae17251')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('4cc28ae17251')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="19986c2cf29f" data-category="Pharma QA/Reg" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/services/drug-development-and-regulatory-affairs-services/" target="_blank" rel="noopener" class="job-title">Drug Development & Regulatory Affairs Services</a>
+                <div class="job-summary">Pharma QA/Reg role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">Pharma QA/Reg</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('19986c2cf29f')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('19986c2cf29f')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ee5a2bd844b0" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/services/data-management-and-biometric-services/clinical-data-science-services/" target="_blank" rel="noopener" class="job-title">Clinical Data Science Services</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ee5a2bd844b0')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ee5a2bd844b0')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d718c8b21e17" data-category="Pharma QA/Reg" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/services/data-management-and-biometric-services/regulatory-medical-writing-and-reporting/" target="_blank" rel="noopener" class="job-title">Regulatory Medical Writing & Reporting</a>
+                <div class="job-summary">Pharma QA/Reg role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">Pharma QA/Reg</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('d718c8b21e17')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('d718c8b21e17')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="99d37355d55b" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/expertise/therapeutic-expertise-areas/respiratory-disease-research/" target="_blank" rel="noopener" class="job-title">Respiratory Disease Research</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('99d37355d55b')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('99d37355d55b')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ace1b69e064c" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/expertise/biosimilar-clinical-research/" target="_blank" rel="noopener" class="job-title">Biosimilar Clinical Research</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ace1b69e064c')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ace1b69e064c')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="b0d4e50fa104" data-category="Pharma QA/Reg" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/expertise/regulatory-product-labeling-studies/" target="_blank" rel="noopener" class="job-title">Regulatory Product Labeling Studies</a>
+                <div class="job-summary">Pharma QA/Reg role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">Pharma QA/Reg</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('b0d4e50fa104')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('b0d4e50fa104')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ec1243cce27e" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/innovations/ecg-core-lab-for-cardiac-trials/" target="_blank" rel="noopener" class="job-title">ECG Core Lab for Cardiac Trials</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ec1243cce27e')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ec1243cce27e')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d35977138505" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/innovations/e-lab-digital-lab-data-management/" target="_blank" rel="noopener" class="job-title">E-Lab Notebook: Digital Lab Data Management</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('d35977138505')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('d35977138505')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="28dd40f2fd86" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/wp-content/uploads/2026/03/Clinic-Careers-Website-Version-scaled-1.jpg" target="_blank" rel="noopener" class="job-title">Clinical Research</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('28dd40f2fd86')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('28dd40f2fd86')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3aca959c5879" data-category="R&D Lab" data-score="6" data-commute="20">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.celerion.com/wp-content/uploads/2026/03/BAS-Careers-Website-Version.jpg" target="_blank" rel="noopener" class="job-title">Bioanalysis Laboratory</a>
+                <div class="job-summary">R&D Lab role at Celerion (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Celerion</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('3aca959c5879')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('3aca959c5879')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="30ef38487606" data-category="R&D Lab" data-score="6" data-commute="33">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.psi.ch/en/hr/job-opportunities/75430-scientific-group-leader-material-ageing-tenure-track" target="_blank" rel="noopener" class="job-title">04.11.2026 • 4603-29467 • 100% Scientific Group Leader “Material Ageing” (Tenure Track) Read more</a>
+                <div class="job-summary">R&D Lab role at Paul Scherrer Institute (PSI) (PSI Career Portal); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Paul Scherrer Institute (PSI)</strong><br><small class="muted">PSI Career Portal</small></td>
+            <td><span class="badge commute-mid">Villigen (~33m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('30ef38487606')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('30ef38487606')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6c2ee1439b96" data-category="R&D Lab" data-score="6" data-commute="33">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.psi.ch/en/hr/job-opportunities/75382-radiation-protection-physicist-engineer" target="_blank" rel="noopener" class="job-title">29.10.2026 • Engineering / Laboratory • 9624-30258 • 100% Radiation Protection Physicist / Engineer Read more</a>
+                <div class="job-summary">R&D Lab role at Paul Scherrer Institute (PSI) (PSI Career Portal); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Paul Scherrer Institute (PSI)</strong><br><small class="muted">PSI Career Portal</small></td>
+            <td><span class="badge commute-mid">Villigen (~33m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('6c2ee1439b96')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('6c2ee1439b96')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ce1560465664" data-category="R&D Lab" data-score="6" data-commute="33">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.psi.ch/en/hr/job-opportunities/75358-project-assistant-scientific-documentation-and-laboratory-administration" target="_blank" rel="noopener" class="job-title">21.10.2026 • 4400-30496 • 60 - 80% Project Assistant – Scientific Documentation and Laboratory Administration (60-80%) Read more</a>
+                <div class="job-summary">R&D Lab role at Paul Scherrer Institute (PSI) (PSI Career Portal); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Paul Scherrer Institute (PSI)</strong><br><small class="muted">PSI Career Portal</small></td>
+            <td><span class="badge commute-mid">Villigen (~33m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ce1560465664')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ce1560465664')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="1605f342bc7a" data-category="R&D Lab" data-score="6" data-commute="33">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.psi.ch/en/hr/job-opportunities/75182-quantum-device-and-measurement-engineer" target="_blank" rel="noopener" class="job-title">17.09.2026 • 6716-29363 • 100% Quantum Device and Measurement Engineer Read more</a>
+                <div class="job-summary">R&D Lab role at Paul Scherrer Institute (PSI) (PSI Career Portal); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Paul Scherrer Institute (PSI)</strong><br><small class="muted">PSI Career Portal</small></td>
+            <td><span class="badge commute-mid">Villigen (~33m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('1605f342bc7a')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('1605f342bc7a')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e8bd5d5ddb49" data-category="Pharma QA/Reg" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.tecan.com/our-commitment-to-quality" target="_blank" rel="noopener" class="job-title">Quality Policy (ISO)</a>
+                <div class="job-summary">Pharma QA/Reg role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">Pharma QA/Reg</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('e8bd5d5ddb49')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('e8bd5d5ddb49')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="f9db7452745b" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://www.tecan.com/hr/research-and-development" target="_blank" rel="noopener" class="job-title">Research and Development</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('f9db7452745b')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('f9db7452745b')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a7dd111bf484" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com?hsLang=en" target="_blank" rel="noopener" class="job-title">Life Sciences</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('a7dd111bf484')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('a7dd111bf484')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e4ed6b339723" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/fluent-laboratory-automation-workstation?p=tab--5" target="_blank" rel="noopener" class="job-title">Applications</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('e4ed6b339723')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('e4ed6b339723')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="51525fefe808" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/multimode-plate-reader-application-packages" target="_blank" rel="noopener" class="job-title">Spark application packages</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('51525fefe808')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('51525fefe808')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="febae6728256" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/plate_readers/infinite_200_pro?p=tab--5" target="_blank" rel="noopener" class="job-title">Scientific citations</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('febae6728256')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('febae6728256')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="09fae91214d6" data-category="Pharma QA/Reg" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/microplate-readers-qc-tools" target="_blank" rel="noopener" class="job-title">Quality control tools</a>
+                <div class="job-summary">Pharma QA/Reg role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">Pharma QA/Reg</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('09fae91214d6')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('09fae91214d6')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e9d2e1af6616" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/qc-kits" target="_blank" rel="noopener" class="job-title">QC Kit consumables</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('e9d2e1af6616')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('e9d2e1af6616')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ef5121dfdb2d" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/applications_and_solutions/drug_discovery/screening_and_lead_optimization?p=tab--2" target="_blank" rel="noopener" class="job-title">Screening-cell-based and biochemical</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('ef5121dfdb2d')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('ef5121dfdb2d')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="5a0ac143c700" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/applications_and_solutions/protein_science" target="_blank" rel="noopener" class="job-title">Protein science</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('5a0ac143c700')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('5a0ac143c700')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="78c77640e2fe" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/applications_and_solutions/protein_science/protein_purification_and_bioprocessing" target="_blank" rel="noopener" class="job-title">Protein purification and bioprocessing</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('78c77640e2fe')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('78c77640e2fe')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="69aa13cdf714" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://diagnostics.tecan.com/mass-spec-instrument-comparison" target="_blank" rel="noopener" class="job-title">Which smart sample prep solution best fits your application?</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('69aa13cdf714')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('69aa13cdf714')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="fd337f8224f8" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lifesciences.tecan.com/integrated-immunoassay-solutions?p=tab--3" target="_blank" rel="noopener" class="job-title">Chemiluminescence integrated</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('fd337f8224f8')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('fd337f8224f8')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="149a7e03fea1" data-category="R&D Lab" data-score="6" data-commute="36">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://diagnostics.tecan.com/case_studies/mll_munich_leukemia_laboratory" target="_blank" rel="noopener" class="job-title">Munich Leukemia Laboratory</a>
+                <div class="job-summary">R&D Lab role at Tecan (Curated Watchlist); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Tecan</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td><span class="badge commute-mid">Männedorf (~36m SBB Train)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('149a7e03fea1')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('149a7e03fea1')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="462b922300d8" data-category="R&D Lab" data-score="6" data-commute="40">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Stein/Process-Expert---aseptic-filling-80-100-_R80604-1" target="_blank" rel="noopener" class="job-title">Process Expert - aseptic filling 80-100%</a>
+                <div class="job-summary">R&D Lab role at Lonza (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-mid">CH - Stein (~40m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('462b922300d8')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('462b922300d8')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3e96b1cba190" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Basel/Data-Scientist---Market-Modelling--f-m-d-_R80622" target="_blank" rel="noopener" class="job-title">Analytics Solutions Manager</a>
+                <div class="job-summary">R&D Lab role at Lonza (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">CH - Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('3e96b1cba190')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('3e96b1cba190')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="addc0809c574" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://novartis.wd3.myworkdayjobs.com/en-US/Novartis_Careers/job/Basel-City/CBC-Process-Expert_REQ-10083985-2" target="_blank" rel="noopener" class="job-title">CBC Process Expert</a>
+                <div class="job-summary">R&D Lab role at Novartis (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Novartis</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (City) (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('addc0809c574')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('addc0809c574')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d4f7618a792e" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://novartis.wd3.myworkdayjobs.com/en-US/Novartis_Careers/job/Basel-City/Translational-Medicine-Director-Associate---Cardiovascular---Metabolic_REQ-10087155-1" target="_blank" rel="noopener" class="job-title">Translational Medicine Director/Associate*- Cardiovascular & Metabolic</a>
+                <div class="job-summary">R&D Lab role at Novartis (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Novartis</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (City) (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('d4f7618a792e')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('d4f7618a792e')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="bad8e73aaa04" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Internship-in-Manufacturing-Science-and-Technology--12-months-_202611-128573" target="_blank" rel="noopener" class="job-title">Internship in Manufacturing Science and Technology (12 months)</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('bad8e73aaa04')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('bad8e73aaa04')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c715061c8890" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Data-Scientist---Engineer---DNA-Encoded-Library-Technology--DELT-_202610-125078-1" target="_blank" rel="noopener" class="job-title">Data Scientist / Engineer - DNA-Encoded Library Technology (DELT)</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c715061c8890')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c715061c8890')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="5c5a9fee5ed1" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Principal-Process-Engineer_202610-127367" target="_blank" rel="noopener" class="job-title">Principal Process Engineer</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('5c5a9fee5ed1')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('5c5a9fee5ed1')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="5eba7c08f306" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Senior-Scientist-in-Flow-Cytometry_202610-126563-2" target="_blank" rel="noopener" class="job-title">Senior Scientist in Flow Cytometry</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('5eba7c08f306')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('5eba7c08f306')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d139354d3a23" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Scientist---Oligonucleotide-Chemistry---Innovation_202609-124798-1" target="_blank" rel="noopener" class="job-title">Scientist – Oligonucleotide Chemistry & Innovation</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('d139354d3a23')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('d139354d3a23')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d3413090d922" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Lab-Scientist--Microscopy_202610-125638-1" target="_blank" rel="noopener" class="job-title">Lab Scientist, Microscopy</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('d3413090d922')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('d3413090d922')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c602776fecae" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Principal-Scientist-si-RNA-Design_202606-115829-1" target="_blank" rel="noopener" class="job-title">"Principal Scientist siRNA Design</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c602776fecae')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c602776fecae')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c97ad4898683" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Compound-Logistics-Workflow-and-Integration-Scientist_202611-128615" target="_blank" rel="noopener" class="job-title">Compound Logistics Workflow and Integration Scientist</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('c97ad4898683')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('c97ad4898683')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="84351b7344b8" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Scientist---Assay-Data--AI---Workflows_202610-126479" target="_blank" rel="noopener" class="job-title">Scientist – Assay Data, AI & Workflows</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('84351b7344b8')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('84351b7344b8')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="686822df0a0c" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Experienced-Discovery-Scientist-in-Immunology_202610-125511-1" target="_blank" rel="noopener" class="job-title">Experienced Discovery Scientist in Immunology</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('686822df0a0c')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('686822df0a0c')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="b61293548d51" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/RNA-Biology-Associate-in-oligonucleotide-screening_202609-124305-2" target="_blank" rel="noopener" class="job-title">RNA Biology Associate in oligonucleotide screening</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('b61293548d51')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('b61293548d51')">✕</button>
+            </td>
+        </tr>
+        
+        <tr data-id="15b7aef73ee3" data-category="R&D Lab" data-score="6" data-commute="60">
+            <td><span class="badge score-low">6/10</span></td>
+            <td>
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Cardio-Renal-Discovery-Area-Leader---Expert-Scientist_202606-116302-2" target="_blank" rel="noopener" class="job-title">Cardio-Renal Discovery & Scientific Strategy Area Leader</a>
+                <div class="job-summary">R&D Lab role at Roche (Workday Direct API); matches MSc Chemistry + R&D background.</div>
+            </td>
+            <td><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td><span class="tag">R&D Lab</span></td>
+            <td><span class="tag">Ideal for MSc+Exp</span><br><small>English</small></td>
+            <td>2026-11-13</td>
+            <td>
+                <button class="btn-action" onclick="toggleApplied('15b7aef73ee3')">Applied</button>
+                <button class="btn-hide" onclick="hideRow('15b7aef73ee3')">✕</button>
+            </td>
+        </tr>
+        
+        </tbody>
+    </table>
+
+<script>
+    function loadState() {
+        const hidden = JSON.parse(localStorage.getItem('hiddenJobs') || '[]');
+        const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+        document.querySelectorAll('#jobsTable tbody tr').forEach(tr => {
+            const id = tr.dataset.id;
+            if (hidden.includes(id)) tr.style.display = 'none';
+            if (applied.includes(id)) tr.classList.add('applied');
+        });
+    }
+    function toggleApplied(id) {
+        let applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        if (applied.includes(id)) {
+            applied = applied.filter(x => x !== id);
+            tr.classList.remove('applied');
+        } else {
+            applied.push(id);
+            tr.classList.add('applied');
+        }
+        localStorage.setItem('appliedJobs', JSON.stringify(applied));
+    }
+    function hideRow(id) {
+        let hidden = JSON.parse(localStorage.getItem('hiddenJobs') || '[]');
+        if (!hidden.includes(id)) hidden.push(id);
+        localStorage.setItem('hiddenJobs', JSON.stringify(hidden));
+        document.querySelector(`tr[data-id="${id}"]`).style.display = 'none';
+    }
+    function resetHidden() {
+        localStorage.removeItem('hiddenJobs');
+        location.reload();
+    }
+    function filterTable() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const cat = document.getElementById('catFilter').value;
+        const maxC = parseInt(document.getElementById('commuteFilter').value);
+        const hidden = JSON.parse(localStorage.getItem('hiddenJobs') || '[]');
+
+        document.querySelectorAll('#jobsTable tbody tr').forEach(tr => {
+            if (hidden.includes(tr.dataset.id)) return;
+            const text = tr.innerText.toLowerCase();
+            const matchQ = text.includes(q);
+            const matchCat = !cat || tr.dataset.category === cat;
+            const matchC = parseInt(tr.dataset.commute) <= maxC;
+            tr.style.display = (matchQ && matchCat && matchC) ? '' : 'none';
+        });
+    }
+    loadState();
+</script>
+</body>
+</html>
