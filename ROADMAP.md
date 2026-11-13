@@ -45,10 +45,10 @@ Use these milestones with the Antigravity agent in VS Code (`Cmd + L`).
 - [x] Filter for high-match positions (`match_score >= 7`) with direct dashboard link (`https://vnahodil.github.io/job_hunt/`).
 - [x] Safe local `.env` credential management (`.gitignore` protected).
 
-## Milestone 9: Full CV Matching, Envisioned Career Directions & Ingestion Guardrails 🔄
-- [ ] Ingestion Guardrails: Block foreign positions (Boston, USA, UK, Germany) and senior executive / non-lab titles (Director, Head of, VP, Partner, Patent Attorney, Legal Counsel, PhD studentships) at the scraper level.
-- [ ] Candidate Profile as Free Text: Store complete CV (`config/candidate/cv.txt`) and envisioned career trajectories (`config/candidate/career_directions.txt`) as clean, easily editable plain text.
-- [ ] Upgraded Gemini Evaluator: Feed full CV + career tracks into Gemini prompt, extracting track alignment, CV skill overlap, seniority suitability, and calibrated 1-10 match score.
-- [ ] Database Sanitation: Purge legacy heuristic phantom jobs (118 rows with generic "role at..." summaries) and foreign/executive positions from `chem_jobs.db`.
-- [ ] Dashboard Quality Floor: Enforce strict quality floor (`match_score >= 6 AND is_relevant = 1`) and add career track filtering.
-- [ ] Re-evaluation & Publish: Re-evaluate discovered vacancies with Gemini Flash and deploy updated dashboard without triggering emails.
+## Milestone 9: Full CV Matching, Envisioned Career Directions & Ingestion Guardrails ✅
+- [x] Ingestion Guardrails: Block foreign positions (Boston, USA, UK, Germany) and senior executive / non-lab titles (Director, Head of, VP, Partner, Patent Attorney, Legal Counsel, PhD studentships) at the scraper level.
+- [x] Candidate Profile as Free Text: Store complete CV (`config/candidate/cv.txt`) and envisioned career trajectories (`config/candidate/career_directions.txt`) as clean, easily editable plain text.
+- [x] Upgraded Gemini Evaluator: Feed full CV + career tracks into Gemini prompt, extracting track alignment, CV skill overlap, seniority suitability, and calibrated 1-10 match score.
+- [x] Database Sanitation: Purged 159 legacy heuristic phantom jobs (generic "role at..." summaries) and foreign/executive positions from `chem_jobs.db`.
+- [x] Dashboard Quality Floor: Enforced strict quality floor (`match_score >= 6 AND is_relevant = 1`) and added Score Filter dropdown defaulting to Top Fits Only (7+).
+- [x] Published: Re-rendered clean dashboard and deployed to GitHub Pages without triggering any emails.
