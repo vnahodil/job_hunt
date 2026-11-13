@@ -107,6 +107,9 @@ aggregator_queries:
   - "PFAS Catalysis"
   - "Formulation Chemist"
   - "Quality Assurance Chemist"
+  - "Capgemini Engineering"
+  - "Life Sciences Consultant"
+  - "Sustainability Consultant"
 
 # ============================================================================
 # 2b. JOBS.CH REST API QUERIES (Switzerland's #1 Job Portal)
@@ -123,6 +126,14 @@ jobs_ch_queries:
   - "water treatment chemistry"
   - "formulation chemist"
   - "laborant chemie"
+  - "life sciences consultant"
+  - "sustainability consultant"
+  - "deloitte life sciences"
+  - "capgemini engineering"
+  - "gi life sciences"
+  - "kelly scientific"
+  - "gloor lang"
+  - "nemensis"
 
 # ============================================================================
 # 2c. MYSCIENCE.CH SCIENTIFIC RESEARCH & INDUSTRY QUERIES
@@ -196,6 +207,32 @@ workday_targets:
     api_url: "https://siegfried.wd103.myworkdayjobs.com/wday/cxs/siegfried/external/jobs"
     site_url: "https://siegfried.wd103.myworkdayjobs.com/en-US/external"
     search_terms: ["Chemist", "Laborant", "Analytik", "Scientist", "Quality", "Zofingen"]
+
+  - company: "PwC Switzerland"
+    default_location: "Zürich"
+    api_url: "https://pwc.wd3.myworkdayjobs.com/wday/cxs/pwc/Global_Experienced_Careers/jobs"
+    site_url: "https://pwc.wd3.myworkdayjobs.com/en-US/Global_Experienced_Careers"
+    search_terms: ["Switzerland Life Sciences", "Switzerland Sustainability", "Zürich Life Sciences"]
+
+# ============================================================================
+# 3b. DIRECT STARTUP JSON APIs (Recruitee, Teamtailor, Lever, Greenhouse)
+# ============================================================================
+startup_api_targets:
+  - company: "Climeworks"
+    platform: "recruitee"
+    slug: "climeworks"
+    default_location: "Zurich"
+
+  - company: "Neustark"
+    platform: "teamtailor"
+    url: "https://careers.neustark.com/jobs.json"
+    default_location: "Zurich"
+
+  - company: "Numab Therapeutics"
+    platform: "greenhouse"
+    slug: "numab"
+    default_location: "Horgen / Zurich"
+
 
 # ============================================================================
 # 4. SWISS RESEARCH INSTITUTES & ECOSYSTEM HUBS
@@ -478,10 +515,20 @@ direct_career_pages:
     sector: "Lab Informatics, LIMS & Scientific Consulting"
     url: "https://www.wega-it.com/en/career/vacancies/"
 
-  - company: " Ramboll Switzerland (Environment & Health)"
+  - company: "Ramboll Switzerland (Environment & Health)"
     location: "Zürich"
     sector: "PFAS Soil/Water Remediation & Chemical Risk Consulting"
     url: "https://www.ramboll.com/careers"
+
+  - company: "Capgemini Engineering"
+    location: "Opfikon / Zürich"
+    sector: "Life Sciences, MES & Process Engineering Consulting"
+    url: "https://www.capgemini.com/ch-en/careers/join-capgemini/job-search/"
+
+  - company: "Buchiglas Uster (Büchi AG)"
+    location: "Uster"
+    sector: "Chemical Reactors, Pressure Vessels & Pilot Plant Equipment"
+    url: "https://www.buchiglas.ch/de/unternehmen/stellenangebote.html"
 
 # ============================================================================
 # 6. KEYWORD REGEX PATTERNS FOR LINK PRE-FILTERING

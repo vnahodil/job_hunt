@@ -71,6 +71,9 @@ class Config:
         # --- Workday ---
         self.WORKDAY_TARGETS: List[Dict[str, Any]] = raw.get("workday_targets", [])
 
+        # --- Direct Startup APIs ---
+        self.STARTUP_API_TARGETS: List[Dict[str, Any]] = raw.get("startup_api_targets", [])
+
         # --- Institutes & Hubs ---
         hubs = raw.get("institutes_and_hubs", {})
         self.ETH_SPINOFF_TABLE_URL: str = hubs.get(

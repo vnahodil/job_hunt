@@ -212,11 +212,10 @@ def evaluate_job(client, title: str, company: str, location: str, desc: str, sou
             except Exception as e:
                 err_msg = str(e).lower()
                 if "429" in err_msg or "resource_exhausted" in err_msg:
-                    time.sleep(4 * (attempt + 1))
+                    time.sleep(3 * (attempt + 1))
                     continue
-                if "503" in err_msg or "unavailable" in err_msg or "not_found" in err_msg:
-                    # Model spike or unavailable -> continue to next model in cascade
-                    continue
+                # For network/timeout, 503, or unavailable, continue to next model in cascade
+                continue
 
     print(f"  [WARN] LLM evaluation failed for '{title[:30]}', using updated heuristic fallback.")
     return evaluate_job_heuristic(title, company, desc, source)

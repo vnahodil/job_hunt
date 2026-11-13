@@ -32,6 +32,13 @@ Use these milestones with the Antigravity agent in VS Code (`Cmd + L`).
 - [x] Add curated direct career page integrations with advanced ATS support (**Gloor & Lang** via Starhunter, **Bachem** via SuccessFactors, **Carbogen Amcis**, **Chemspeed Technologies** via iCIMS).
 - [x] Upgrade Gemini LLM evaluation model cascade (`gemini-3.8-flash`, `gemini-3.5-flash`, `gemini-3.5-flash-lite`, `gemini-3.1-flash-lite`) to prevent daily free-tier quota interruptions.
 
-## Milestone 7: Daily Notification Delivery (Telegram / Email Digest)
+## Milestone 7: Direct Startup APIs, Life Science Work, SCS & Consulting Feeds ✅
+- [x] Implement `src/scrapers/startup_apis.py` supporting Recruitee (**Climeworks**), Teamtailor (**Neustark**), Lever (**ANYbotics**), and Greenhouse (**Numab Therapeutics**).
+- [x] Implement `src/scrapers/lifesciencework.py` for specialized Swiss biotech, pharma, and CDMO positions across Basel, Zurich, Zug, and surrounding cantons.
+- [x] Implement `src/scrapers/scs.py` for Swiss Chemical Society (`scg.ch/jobs`) member directory and partner career pages (**Buchiglas Uster**).
+- [x] Integrate **PwC Switzerland** Life Sciences & Sustainability Consulting via Workday CaaS API (`pwc.wd3.myworkdayjobs.com`).
+- [x] Expand LinkedIn, Indeed, and `jobs.ch` queries with specialized consulting practices (**Capgemini Engineering**, **Deloitte Life Sciences**, **Life Sciences Consultant**, **Sustainability Consultant**) and staffing agencies (**nemensis**, **gi life sciences**, **kelly scientific**, **gloor lang**).
+
+## Milestone 8: Daily Notification Delivery (Telegram / Email Digest)
 - [ ] Add an optional notifier module (`src/notify.py`) triggered when `--notify` is passed.
 - [ ] Send daily summary of new roles with `match_score >= 7` via Telegram Bot webhook or Gmail SMTP.

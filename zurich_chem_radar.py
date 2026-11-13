@@ -15,6 +15,7 @@ from datetime import datetime
 
 try:
     from google import genai
+    from google.genai import types
     HAS_GENAI = True
 except ImportError:
     HAS_GENAI = False
@@ -31,6 +32,9 @@ from src.scrapers.workday import fetch_workday_apis
 from src.scrapers.career_pages import fetch_curated_career_pages
 from src.scrapers.jobs_ch import fetch_jobs_ch
 from src.scrapers.myscience import fetch_myscience_jobs
+from src.scrapers.lifesciencework import fetch_lifesciencework_jobs
+from src.scrapers.startup_apis import fetch_startup_api_jobs
+from src.scrapers.scs import fetch_scs_jobs
 from src.scrapers.description_fetcher import fetch_job_description_body
 
 
@@ -42,6 +46,9 @@ def main():
     parser.add_argument("--skip-jobspy", action="store_true", help="Skip aggregator scraping (Indeed/LinkedIn/Google)")
     parser.add_argument("--skip-jobs-ch", action="store_true", help="Skip jobs.ch REST API scan")
     parser.add_argument("--skip-myscience", action="store_true", help="Skip myScience.ch science portal scan")
+    parser.add_argument("--skip-lifesciencework", action="store_true", help="Skip Life Science Work portal scan")
+    parser.add_argument("--skip-startup-apis", action="store_true", help="Skip direct startup JSON APIs scan")
+    parser.add_argument("--skip-scs", action="store_true", help="Skip Swiss Chemical Society portal scan")
     parser.add_argument(
         "--jobspy-sites",
         nargs="+",
@@ -53,7 +60,14 @@ def main():
     args = parser.parse_args()
 
     conn = init_db()
-    client = genai.Client(api_key=cfg.GEMINI_API_KEY) if (HAS_GENAI and cfg.GEMINI_API_KEY) else None
+    client = (
+        genai.Client(
+            api_key=cfg.GEMINI_API_KEY,
+            http_options=types.HttpOptions(timeout=15000),
+        )
+        if (HAS_GENAI and cfg.GEMINI_API_KEY)
+        else None
+    )
     if client:
         print("[INFO] Gemini Flash semantic scoring ENABLED (gemini-3.8-flash / 3.5-flash).")
     else:
@@ -84,15 +98,30 @@ def main():
     else:
         print("[*] Skipping myScience.ch (--skip-myscience passed).")
     raw_jobs.extend(fetch_workday_apis())
+    if not args.skip_startup_apis:
+        raw_jobs.extend(fetch_startup_api_jobs())
+    else:
+        print("[*] Skipping direct startup JSON APIs (--skip-startup-apis passed).")
+    if not args.skip_lifesciencework:
+        raw_jobs.extend(fetch_lifesciencework_jobs())
+    else:
+        print("[*] Skipping Life Science Work portal (--skip-lifesciencework passed).")
+    if not args.skip_scs:
+        raw_jobs.extend(fetch_scs_jobs())
+    else:
+        print("[*] Skipping Swiss Chemical Society (--skip-scs passed).")
     raw_jobs.extend(fetch_curated_career_pages())
     if not args.skip_jobs_ch:
         raw_jobs.extend(fetch_jobs_ch())
     else:
         print("[*] Skipping jobs.ch API (--skip-jobs-ch passed).")
 
-    print(f"[6/6] Deduplicating, checking SBB commutes from {cfg.HOME_ORIGIN}, and scoring {len(raw_jobs)} listings...")
+    print(f"[*] Filtering {len(raw_jobs)} listings: checking database for duplicates and SBB commute limit...")
     cur = conn.cursor()
-    new_relevant_count = 0
+
+    already_seen_count = 0
+    commute_exceeded_count = 0
+    to_evaluate = []
 
     for item in raw_jobs:
         title = item.get("title", "").strip()
@@ -108,11 +137,42 @@ def main():
         jhash = make_job_hash(company, title)
         cur.execute("SELECT 1 FROM jobs WHERE job_hash = ?", (jhash,))
         if cur.fetchone():
+            already_seen_count += 1
             continue
 
         commute_mins, commute_mode = get_commute_info(conn, location)
         if commute_mins > (cfg.MAX_COMMUTE_MINS + 5) and "basel" not in location.lower():
+            commute_exceeded_count += 1
             continue
+
+        to_evaluate.append({
+            "item": item,
+            "jhash": jhash,
+            "title": title,
+            "company": company,
+            "location": location,
+            "url": url,
+            "desc": desc,
+            "source": source,
+            "commute_mins": commute_mins,
+            "commute_mode": commute_mode,
+        })
+
+    print(f"  -> {already_seen_count} already in database (skipped)")
+    print(f"  -> {commute_exceeded_count} exceed ~{cfg.MAX_COMMUTE_MINS}m commute limit (skipped)")
+    print(f"  -> {len(to_evaluate)} brand new candidates to evaluate with Gemini...")
+
+    new_relevant_count = 0
+    for idx, cand in enumerate(to_evaluate, 1):
+        title = cand["title"]
+        company = cand["company"]
+        location = cand["location"]
+        url = cand["url"]
+        desc = cand["desc"]
+        source = cand["source"]
+        jhash = cand["jhash"]
+        commute_mins = cand["commute_mins"]
+        commute_mode = cand["commute_mode"]
 
         # Deep description fetching if text is brief
         if len(desc.strip()) < 80 and url:
@@ -134,6 +194,7 @@ def main():
         conn.commit()
         if ev.is_relevant:
             new_relevant_count += 1
+        print(f"     [{idx}/{len(to_evaluate)}] {title[:38]} @ {company[:20]} -> {ev.match_score}/10 ({ev.role_category})")
 
     print(f"  -> Added {new_relevant_count} new relevant positions within ~{cfg.MAX_COMMUTE_MINS}m of {cfg.HOME_ORIGIN}.")
     generate_html_dashboard(conn)
