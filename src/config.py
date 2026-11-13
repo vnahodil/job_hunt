@@ -87,6 +87,7 @@ class Config:
         notify = raw.get("notifications", {})
         self.NOTIFY_ENABLED: bool = bool(notify.get("enabled", True))
         self.MIN_NOTIFY_SCORE: int = int(os.getenv("MIN_NOTIFY_SCORE", notify.get("min_score", 7)))
+        self.MAX_EMAIL_JOBS: int = int(os.getenv("MAX_EMAIL_JOBS", notify.get("max_email_jobs", 6)))
         self.SMTP_HOST: str = os.getenv("SMTP_HOST", notify.get("smtp_host", "smtp.gmail.com"))
         self.SMTP_PORT: int = int(os.getenv("SMTP_PORT", notify.get("smtp_port", 587)))
         self.SMTP_USER: str = os.getenv("SMTP_USER", notify.get("smtp_user", ""))

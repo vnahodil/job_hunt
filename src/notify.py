@@ -14,10 +14,15 @@ from typing import Dict, List, Optional
 from src.config import cfg
 
 
-def _build_html_body(jobs: List[Dict], date_str: str) -> str:
-    """Builds a beautiful, responsive HTML email body."""
+def _build_html_body(
+    display_jobs: List[Dict],
+    total_count: int,
+    date_str: str,
+    is_test: bool = False,
+) -> str:
+    """Builds a beautiful, responsive HTML email body with highlights + total count."""
     cards_html = ""
-    for j in jobs:
+    for j in display_jobs:
         score = int(j.get("match_score", 0))
         score_bg = "#15803d" if score >= 9 else ("#16a34a" if score >= 8 else "#ca8a04")
         commute_mins = j.get("commute_mins", 0)
@@ -60,6 +65,29 @@ def _build_html_body(jobs: List[Dict], date_str: str) -> str:
         </div>
         """
 
+    # Banner for extra jobs if total_count > len(display_jobs)
+    overflow_count = max(0, total_count - len(display_jobs))
+    overflow_banner = ""
+    if overflow_count > 0:
+        overflow_banner = f"""
+        <div style="background-color: #f0fdf4; border: 1px dashed #86efac; border-radius: 8px; padding: 14px; text-align: center; margin-bottom: 20px;">
+            <div style="color: #166534; font-weight: 600; font-size: 14px;">
+                ✨ + {overflow_count} more new matching positions discovered today!
+            </div>
+            <div style="color: #15803d; font-size: 12px; margin-top: 4px;">
+                All {total_count} roles are ready with commute filters & 1-click CV prompts in your dashboard.
+            </div>
+        </div>
+        """
+
+    # Customize hero text
+    if is_test:
+        hero_text = f"This is a test preview showing the <strong>top {len(display_jobs)} high-match highlights</strong> currently in your radar (out of <strong>{total_count} active matching roles</strong>):"
+    elif overflow_count > 0:
+        hero_text = f"Good morning! <strong>{total_count} high-match roles (&ge; {cfg.MIN_NOTIFY_SCORE}/10)</strong> were discovered today. Here are today's <strong>Top {len(display_jobs)} highlights</strong> based on profile fit and commute:"
+    else:
+        hero_text = f"Good morning! <strong>{total_count} new high-match roles (&ge; {cfg.MIN_NOTIFY_SCORE}/10)</strong> were discovered today matching your organic chemistry & cleantech profile:"
+
     html = f"""<!DOCTYPE html>
 <html>
 <head>
@@ -82,19 +110,20 @@ def _build_html_body(jobs: List[Dict], date_str: str) -> str:
         <!-- Hero text -->
         <div style="padding: 20px 24px 10px 24px; background-color: #ffffff;">
             <p style="margin: 0; font-size: 15px; color: #334155; line-height: 1.5;">
-                Good morning! <strong>{len(jobs)} high-match roles (&ge; {cfg.MIN_NOTIFY_SCORE}/10)</strong> were discovered today matching her organic chemistry & cleantech profile:
+                {hero_text}
             </p>
         </div>
 
         <!-- Job Cards -->
-        <div style="padding: 10px 24px 20px 24px;">
+        <div style="padding: 10px 24px 10px 24px;">
             {cards_html}
+            {overflow_banner}
         </div>
 
         <!-- CTA Button -->
         <div style="padding: 0 24px 28px 24px; text-align: center;">
             <a href="{cfg.DASHBOARD_URL}" target="_blank" style="display: inline-block; background-color: #0284c7; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 24px; border-radius: 8px; text-decoration: none; box-shadow: 0 2px 4px rgba(2,132,199,0.3);">
-                Open Full Interactive Radar (300+ Roles & CV Prompts) &rarr;
+                Open Interactive Radar ({total_count} Matching Roles) &rarr;
             </a>
             <div style="margin-top: 10px; font-size: 12px; color: #94a3b8;">
                 Includes commute filters, live search, and 1-click tailored cover letter prompts.
@@ -111,16 +140,30 @@ def _build_html_body(jobs: List[Dict], date_str: str) -> str:
     return html
 
 
-def _build_text_body(jobs: List[Dict], date_str: str) -> str:
+def _build_text_body(
+    display_jobs: List[Dict],
+    total_count: int,
+    date_str: str,
+    is_test: bool = False,
+) -> str:
     """Builds a fallback plain-text email body."""
+    overflow_count = max(0, total_count - len(display_jobs))
     lines = [
         f"🧪 Zurich Chemistry & Cleantech Job Radar - Daily Digest ({date_str})",
         f"Origin: {cfg.HOME_ORIGIN} (Max ~{cfg.MAX_COMMUTE_MINS}m)",
         "",
-        f"Good morning! {len(jobs)} high-match roles (>= {cfg.MIN_NOTIFY_SCORE}/10) were discovered today:",
-        "-" * 50,
     ]
-    for j in jobs:
+    if is_test:
+        lines.append(f"This is a test preview showing Top {len(display_jobs)} highlights (out of {total_count} active matching roles):")
+    elif overflow_count > 0:
+        lines.append(f"Good morning! {total_count} high-match roles (>= {cfg.MIN_NOTIFY_SCORE}/10) were discovered today.")
+        lines.append(f"Here are today's Top {len(display_jobs)} highlights:")
+    else:
+        lines.append(f"Good morning! {total_count} new high-match roles (>= {cfg.MIN_NOTIFY_SCORE}/10) were discovered today:")
+
+    lines.append("-" * 50)
+
+    for j in display_jobs:
         score = j.get("match_score", 0)
         title = j.get("title", "")
         company = j.get("company", "")
@@ -135,6 +178,9 @@ def _build_text_body(jobs: List[Dict], date_str: str) -> str:
         lines.append(f"  Location: {location} (~{mins}m {mode}) | Category: {category}")
         lines.append(f"  Match: \"{summary}\"")
         lines.append(f"  Link: {url}")
+
+    if overflow_count > 0:
+        lines.append(f"\n✨ + {overflow_count} more new matching positions waiting in the dashboard!")
 
     lines.append("\n" + "-" * 50)
     lines.append(f"Open Full Interactive Radar: {cfg.DASHBOARD_URL}")
@@ -181,10 +227,13 @@ def send_daily_email_digest(
     jobs: Optional[List[Dict]] = None,
     conn: Optional[sqlite3.Connection] = None,
     force: bool = False,
+    total_count: Optional[int] = None,
+    is_test: bool = False,
 ) -> bool:
     """
     Sends the daily email summary.
     If jobs is None, queries SQLite for today's new high-scoring jobs.
+    Previews top N jobs in email (cfg.MAX_EMAIL_JOBS) while reporting total count.
     Returns True if sent or skipped normally, False if an error occurred.
     """
     if not cfg.NOTIFY_ENABLED and not force:
@@ -202,22 +251,35 @@ def send_daily_email_digest(
         print(f"[notify] No new roles with match_score >= {cfg.MIN_NOTIFY_SCORE} found today ({today_str}). Skipping email.")
         return True
 
+    if total_count is None:
+        total_count = len(jobs)
+
+    max_display = getattr(cfg, "MAX_EMAIL_JOBS", 6)
+    display_jobs = jobs[:max_display]
+
     if not cfg.SMTP_USER or not cfg.SMTP_PASS:
         print("\n[notify WARNING] Email credentials not configured:")
         print("  -> Set SMTP_USER and SMTP_PASS in .env or environment to enable email delivery.")
-        print(f"  -> Generated digest ready with {len(jobs)} high-fit roles.")
+        print(f"  -> Generated digest ready with {total_count} high-fit roles ({len(display_jobs)} previewed).")
         return False
 
     recipients = cfg.NOTIFY_RECIPIENTS or [cfg.SMTP_USER]
 
-    # Build Email Message
+    # Build Email Message with dynamic subject
+    if is_test:
+        subject = f"🧪 [TEST PREVIEW] Zurich Chem Radar ({len(display_jobs)} Highlights of {total_count} Matching Roles)"
+    elif total_count > len(display_jobs):
+        subject = f"🧪 [Zurich Chem Radar] {total_count} New Roles Discovered Today • Top {len(display_jobs)} Highlights ({today_str})"
+    else:
+        subject = f"🧪 [Zurich Chem Radar] {total_count} New Roles Discovered Today ({today_str})"
+
     msg = EmailMessage()
-    msg["Subject"] = f"🧪 [Zurich Chem Radar] {len(jobs)} Top Roles Discovered Today ({today_str})"
+    msg["Subject"] = subject
     msg["From"] = f"Zurich Chem Radar <{cfg.SMTP_USER}>"
     msg["To"] = ", ".join(recipients)
 
-    text_content = _build_text_body(jobs, today_str)
-    html_content = _build_html_body(jobs, today_str)
+    text_content = _build_text_body(display_jobs, total_count, today_str, is_test=is_test)
+    html_content = _build_html_body(display_jobs, total_count, today_str, is_test=is_test)
 
     msg.set_content(text_content)
     msg.add_alternative(html_content, subtype="html")
@@ -235,7 +297,7 @@ def send_daily_email_digest(
         server.login(cfg.SMTP_USER, cfg.SMTP_PASS)
         server.send_message(msg)
         server.quit()
-        print(f"[notify SUCCESS] Sent daily digest ({len(jobs)} roles) to {', '.join(recipients)}!")
+        print(f"[notify SUCCESS] Sent daily digest ({len(display_jobs)} highlights of {total_count} total roles) to {', '.join(recipients)}!")
         return True
     except smtplib.SMTPAuthenticationError as e:
         print(f"\n[notify ERROR] Gmail SMTP Authentication failed: {e}")

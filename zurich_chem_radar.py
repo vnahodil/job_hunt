@@ -122,13 +122,21 @@ def main():
         cur = conn.cursor()
         cur.execute(
             """
+            SELECT count(*) FROM jobs WHERE match_score >= 7 AND is_relevant = 1
+            """
+        )
+        total_matching = cur.fetchone()[0]
+
+        cur.execute(
+            """
             SELECT title, company, location, url, commute_mins, commute_mode,
                    match_score, role_category, degree_fit, summary
             FROM jobs
             WHERE match_score >= 8 AND is_relevant = 1
             ORDER BY match_score DESC, commute_mins ASC
-            LIMIT 4
-            """
+            LIMIT ?
+            """,
+            (cfg.MAX_EMAIL_JOBS,),
         )
         sample_jobs = [
             {
@@ -145,7 +153,13 @@ def main():
             }
             for r in cur.fetchall()
         ]
-        send_daily_email_digest(jobs=sample_jobs, conn=conn, force=True)
+        send_daily_email_digest(
+            jobs=sample_jobs,
+            conn=conn,
+            force=True,
+            total_count=total_matching,
+            is_test=True,
+        )
         return
 
     # --dashboard-only mode: re-render HTML files from DB without scraping
