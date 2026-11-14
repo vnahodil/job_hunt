@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zurich Chemistry & Cleantech Job Radar</title>
+<style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8; --accent: #38bdf8; --border: #334155; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 24px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 16px; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    .controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; background: var(--card); padding: 14px; border-radius: 10px; border: 1px solid var(--border); }
+    input, select, button { background: #0f172a; color: var(--text); border: 1px solid var(--border); padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 10px; overflow: hidden; }
+    th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: #0f172a; color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    th.col-fit { width: 55px; min-width: 55px; }
+    th.col-role { width: 38%; min-width: 340px; }
+    th.col-co { width: 12%; min-width: 120px; }
+    th.col-commute { width: 13%; min-width: 130px; }
+    th.col-cat { width: 15%; min-width: 145px; }
+    th.col-degree { width: 10%; min-width: 105px; }
+    th.col-found { width: 125px; min-width: 125px; }
+    th.col-action { width: 95px; min-width: 95px; }
+    td.col-action-cell { padding: 10px 8px; }
+    .col-found-cell { white-space: nowrap; font-size: 0.84rem; }
+    th.sortable { cursor: pointer; user-select: none; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+    th.sortable:hover { background: #1e293b; color: var(--accent); }
+    .sort-icon { font-size: 0.72rem; margin-left: 4px; opacity: 0.45; display: inline-block; vertical-align: middle; }
+    th.asc .sort-icon, th.desc .sort-icon { opacity: 1; color: var(--accent); }
+    tr:hover { background: rgba(56, 189, 248, 0.06); }
+    tr.applied { background: rgba(34, 197, 94, 0.12) !important; }
+    .job-title { color: var(--accent); font-weight: 600; text-decoration: none; font-size: 0.98rem; }
+    .job-title:hover { text-decoration: underline; }
+    .job-summary { color: var(--muted); font-size: 0.82rem; margin-top: 5px; line-height: 1.42; }
+    .sum-row { margin-top: 4px; display: flex; align-items: baseline; gap: 6px; }
+    .sum-tag { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; padding: 2px 6px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+    .sum-track { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .sum-fit { background: rgba(34, 197, 94, 0.15); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .sum-gap { background: rgba(248, 113, 113, 0.15); color: #f87171; border: 1px solid rgba(248, 113, 113, 0.3); }
+    .cat-tag { display: inline-block; margin-bottom: 4px; }
+    .cat-track { color: var(--muted); font-size: 0.78rem; line-height: 1.35; margin-top: 5px; }
+    .cat-track .sum-tag { font-size: 0.65rem; padding: 1px 5px; margin-right: 3px; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 6px; font-weight: 600; font-size: 0.8rem; }
+    .score-high { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .score-med { background: rgba(250, 204, 21, 0.2); color: #facc15; }
+    .score-low { background: rgba(148, 163, 184, 0.2); color: #cbd5e1; }
+    .commute-fast { background: rgba(34, 197, 94, 0.15); color: #86efac; }
+    .commute-mid { background: rgba(56, 189, 248, 0.15); color: #7dd3fc; }
+    .commute-far { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+    .tag { background: #334155; padding: 3px 7px; border-radius: 4px; font-size: 0.78rem; }
+    .muted { color: var(--muted); }
+    .btn-action, .btn-prompt, .btn-hide {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        font-size: 0.76rem;
+        padding: 5px 4px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        white-space: nowrap;
+        border: 1px solid transparent;
+        transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-action { background: #1e3a8a; border-color: #1d4ed8; color: #fff; margin-bottom: 4px; }
+    .btn-action:hover { background: #2563eb; }
+    tr.applied .btn-action { background: #15803d; border-color: #16a34a; color: #fff; }
+    tr.applied .btn-action:hover { background: #16a34a; }
+    .btn-prompt { background: #0284c7; border-color: #0369a1; color: #fff; margin-bottom: 4px; }
+    .btn-prompt:hover { background: #0ea5e9; }
+    .btn-hide { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.35); color: #f87171; margin-bottom: 0; }
+    .btn-hide:hover { background: rgba(239, 68, 68, 0.28); border-color: rgba(239, 68, 68, 0.5); }
+    .btn-unhide { background: rgba(14, 165, 233, 0.2) !important; border-color: #38bdf8 !important; color: #38bdf8 !important; margin-bottom: 0; }
+    .btn-unhide:hover { background: rgba(14, 165, 233, 0.35) !important; }
+    #toggleHiddenBtn { cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+    #toggleHiddenBtn.active-hidden-view { background: rgba(239, 68, 68, 0.22); border-color: #f87171; color: #fecaca; font-weight: 600; }
+    tr.is-hidden-row { opacity: 0.92; border-left: 3px solid #f87171; }
+    .mobile-only-control { display: none; }
+
+    @media (max-width: 860px) {
+        body {
+            padding: 12px;
+        }
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            padding-bottom: 12px;
+        }
+        h1 {
+            font-size: 1.25rem;
+            line-height: 1.3;
+        }
+        .controls {
+            padding: 10px;
+            gap: 8px;
+        }
+        .controls input,
+        .controls select,
+        .controls button {
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px; /* Prevents auto-zoom on iOS */
+            padding: 10px 12px;
+        }
+        .mobile-only-control {
+            display: block;
+        }
+
+        /* Responsive Card Transformation */
+        table, thead, tbody, th, td, tr {
+            display: block;
+        }
+        thead {
+            display: none;
+        }
+        tr {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            padding: 16px;
+            position: relative;
+            box-sizing: border-box;
+        }
+        tr.is-hidden-row {
+            border-left: 4px solid #f87171 !important;
+        }
+        tr.applied {
+            border-left: 4px solid #22c55e !important;
+        }
+        td {
+            padding: 3px 0;
+            border: none;
+        }
+
+        /* Fit badge top right */
+        td.col-fit-cell {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 0;
+        }
+        td.col-fit-cell .badge {
+            font-size: 0.88rem;
+            padding: 4px 10px;
+        }
+
+        /* Role Title */
+        td.col-role-cell {
+            padding-right: 65px;
+            margin-bottom: 6px;
+        }
+        .job-title {
+            font-size: 1.05rem;
+            line-height: 1.35;
+            display: inline-block;
+            margin-bottom: 4px;
+        }
+        .job-summary {
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+
+        /* Company & Commute */
+        td.col-co-cell {
+            margin-bottom: 4px;
+            font-size: 0.92rem;
+        }
+        td.col-commute-cell {
+            margin-bottom: 6px;
+        }
+        td.col-commute-cell .badge {
+            font-size: 0.78rem;
+            white-space: normal;
+            line-height: 1.3;
+        }
+
+        /* Category & Degree */
+        td.col-cat-cell {
+            margin-bottom: 4px;
+        }
+        td.col-degree-cell {
+            margin-bottom: 4px;
+            font-size: 0.82rem;
+        }
+
+        /* Found Date */
+        td.col-found-cell {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 4px;
+            margin-bottom: 8px;
+        }
+        td.col-found-cell::before {
+            content: "Discovered: ";
+            font-weight: 500;
+            color: var(--muted);
+        }
+
+        /* Action buttons: horizontal row on mobile */
+        td.col-action-cell {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        td.col-action-cell .btn-action,
+        td.col-action-cell .btn-prompt,
+        td.col-action-cell .btn-hide {
+            flex: 1;
+            margin: 0;
+            padding: 9px 4px;
+            font-size: 0.82rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+    }
+</style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🧪 Zurich Chemistry & Cleantech Job Radar</h1>
+            <small class="muted">Origin: Glattbrugg (Max ~60m) | Profile: MSc Chemistry (Honors) + R&D (ETH Zürich / Oxyle / UCT Prague) | Updated: 2026-11-14 23:14</small>
+        </div>
+        <div id="roleCountDisplay"><strong>47</strong> Matching Roles</div>
+    </div>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Filter by title, company, location, PFAS, HPLC, Peptides..." oninput="filterTable()" style="flex:1;">
+        <select id="scoreFilter" onchange="filterTable()">
+            <option value="0" selected>All Verified Roles (6+ / 10)</option>
+            <option value="7">Top Fits Only (7+ / 10)</option>
+            <option value="8">Strong Matches (8+ / 10)</option>
+            <option value="9">Dream Roles (9-10 / 10)</option>
+        </select>
+        <select id="catFilter" onchange="filterTable()">
+            <option value="">All Categories</option>
+            <option value="R&D Lab">R&D Lab</option>
+            <option value="Cleantech">Cleantech</option>
+            <option value="Analytical">Analytical</option>
+            <option value="Pharma QA/Reg">Pharma QA/Reg</option>
+            <option value="Consulting/App">Consulting/App</option>
+        </select>
+        <select id="commuteFilter" onchange="filterTable()">
+            <option value="999">All Commutes (<= 60m)</option>
+            <option value="25"><= 25 mins (Zurich / Schlieren / Dübendorf / Winterthur)</option>
+            <option value="45"><= 45 mins (+ Zug / Baden / Schaffhausen / Stein)</option>
+        </select>
+        <select id="mobileSort" class="mobile-only-control" onchange="onMobileSortChange()">
+            <option value="0-desc" selected>Sort: Fit (Highest)</option>
+            <option value="0-asc">Sort: Fit (Lowest)</option>
+            <option value="6-desc">Sort: Date (Newest)</option>
+            <option value="6-asc">Sort: Date (Oldest)</option>
+            <option value="3-asc">Sort: Commute (Shortest)</option>
+            <option value="1-asc">Sort: Title (A-Z)</option>
+            <option value="2-asc">Sort: Company (A-Z)</option>
+        </select>
+        <button id="toggleHiddenBtn" onclick="toggleShowHidden()">Show Hidden (0)</button>
+    </div>
+
+    <table id="jobsTable">
+        <thead>
+            <tr>
+                <th class="sortable col-fit desc" onclick="sortTable(0)">Fit <span class="sort-icon">▼</span></th>
+                <th class="sortable col-role" onclick="sortTable(1)">Role & Match Summary <span class="sort-icon">↕</span></th>
+                <th class="sortable col-co" onclick="sortTable(2)">Company <span class="sort-icon">↕</span></th>
+                <th class="sortable col-commute" onclick="sortTable(3)">Commute <span class="sort-icon">↕</span></th>
+                <th class="sortable col-cat" onclick="sortTable(4)">Category & Track <span class="sort-icon">↕</span></th>
+                <th class="sortable col-degree" onclick="sortTable(5)">Degree & Language <span class="sort-icon">↕</span></th>
+                <th class="sortable col-found" onclick="sortTable(6)">Found <span class="sort-icon">↕</span></th>
+                <th class="sortable col-action" onclick="sortTable(7)">Status <span class="sort-icon">↕</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        <tr data-id="520e4d7870f4" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="8" data-commute="15" data-title="Lab Specialist Analytics - Mass spectrometry (m/f/d)" data-company="Givaudan" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.linkedin.com/jobs/view/4482728274" target="_blank" rel="noopener" class="job-title">Lab Specialist Analytics - Mass spectrometry (m/f/d)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with candidate's hands-on mass spectrometry, LC-MS instrumentation, and chromatographic method development experience from UCT Prague and ETH Zürich.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Minor gaps in industrial high-throughput routine QC workflow under strict ISO/GMP environments compared to academic research setups.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Givaudan</strong><br><small class="muted">JobSpy (Linkedin)</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Kemptthal, Zurich, Switzerland (~15m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('520e4d7870f4')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab Specialist Analytics - Mass spectrometry (m/f/d)', 'Givaudan', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with candidate\'s hands-on mass spectrometry, LC-MS instrumentation, and chromatographic method development experience from UCT Prague and ETH Zürich. | ⚠️ Gaps: Minor gaps in industrial high-throughput routine QC workflow under strict ISO/GMP environments compared to academic research setups.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('520e4d7870f4')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="dec10785214c" data-category="R&D Lab" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="8" data-commute="15" data-title="Research Internship in Mass Spectrometry for Drug Discovery with an Industrial PhD Pathway" data-company="Philochem AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/4950e1a9-4385-4d59-9157-1b16484ff3eb/" target="_blank" rel="noopener" class="job-title">Research Internship in Mass Spectrometry for Drug Discovery with an Industrial PhD Pathway</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with organic synthesis, solid-phase synthesis experience from ETH Bode group, and hands-on operational experience with HPLC, LCMS, and mass spectrometry instruments.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Requires transition from academic/startup benchtop scale to specialized affinity-selection mass spectrometry platforms, and the potential commitment pathway to an industrial PhD.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Philochem AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Zurich (~15m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">R&D Lab</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('dec10785214c')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Research Internship in Mass Spectrometry for Drug Discovery with an Industrial PhD Pathway', 'Philochem AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with organic synthesis, solid-phase synthesis experience from ETH Bode group, and hands-on operational experience with HPLC, LCMS, and mass spectrometry instruments. | ⚠️ Gaps: Requires transition from academic/startup benchtop scale to specialized affinity-selection mass spectrometry platforms, and the potential commitment pathway to an industrial PhD.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('dec10785214c')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ccea8af16e39" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="8" data-commute="20" data-title="Bioanalytische/r Laborant/in (80–100%)" data-company="Celerion Switzerland AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/d1f3b830-a03b-44e9-9711-4f280aec520d/" target="_blank" rel="noopener" class="job-title">Bioanalytische/r Laborant/in (80–100%)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with LC-MS/MS sample preparation, chromatographic analysis, method validation, and GLP-aligned documentation gained through research and industry internships (ETH and UCT Prague).</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup research chromatography to a commercial high-throughput GLP bioanalytical CRO environment with strict clinical sample workflows.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Celerion Switzerland AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('ccea8af16e39')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Bioanalytische/r Laborant/in (80–100%)', 'Celerion Switzerland AG', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with LC-MS/MS sample preparation, chromatographic analysis, method validation, and GLP-aligned documentation gained through research and industry internships (ETH and UCT Prague). | ⚠️ Gaps: Transitioning from academic/startup research chromatography to a commercial high-throughput GLP bioanalytical CRO environment with strict clinical sample workflows.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('ccea8af16e39')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3d908b350a03" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (CDMO / Development)" data-score="8" data-commute="33" data-title="Chemiker:in / Chemietechnologe:in / Chemiker:in in der Entwicklung (80-100%)" data-company="Frike Chemicals AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/54462d92-3797-4435-b6b0-6d413aff69bf/" target="_blank" rel="noopener" class="job-title">Chemiker:in / Chemietechnologe:in / Chemiker:in in der Entwicklung (80-100%)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap in chemical development, synthetic route execution, laboratory troubleshooting, and hands-on laboratory optimization matching her UCT Prague and Oxyle process experience.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop scale to industrial contract manufacturing (CDMO) production scale; adapting to Swiss-German workplace communication.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Frike Chemicals AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Wetzikon ZH (~33m SBB Train)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (CDMO / Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('3d908b350a03')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Chemiker:in / Chemietechnologe:in / Chemiker:in in der Entwicklung (80-100%)', 'Frike Chemicals AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (CDMO / Development) | ✅ Fit: Direct overlap in chemical development, synthetic route execution, laboratory troubleshooting, and hands-on laboratory optimization matching her UCT Prague and Oxyle process experience. | ⚠️ Gaps: Transitioning from academic/startup benchtop scale to industrial contract manufacturing (CDMO) production scale; adapting to Swiss-German workplace communication.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('3d908b350a03')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a56ff5897bc5" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="8" data-commute="40" data-title="Research Chemist (all genders)" data-company="Gi Life Sciences Basel" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/1a41f06b-306c-44ec-9c3d-3044e1acae35/" target="_blank" rel="noopener" class="job-title">Research Chemist (all genders)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with synthetic organic chemistry, reaction optimization, purification, and analytical characterization using HPLC, LC-MS, and NMR.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal hands-on experience with high-throughput laboratory automation equipment and automated dispensing workflows specified in the role.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Gi Life Sciences Basel</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Stein (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('a56ff5897bc5')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Research Chemist (all genders)', 'Gi Life Sciences Basel', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with synthetic organic chemistry, reaction optimization, purification, and analytical characterization using HPLC, LC-MS, and NMR. | ⚠️ Gaps: Lacks formal hands-on experience with high-throughput laboratory automation equipment and automated dispensing workflows specified in the role.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('a56ff5897bc5')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="9c3e2ae535c3" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="8" data-commute="45" data-title="Chemielaborant/in analytische Entwicklung" data-company="Siegfried" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://siegfried.wd103.myworkdayjobs.com/en-US/external/job/Zofingen/Chemielaborant-in-analytische-Entwicklung_R26_805" target="_blank" rel="noopener" class="job-title">Chemielaborant/in analytische Entwicklung</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with HPLC, LCMS, and analytical method development from UCT Prague and ETH research</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transition from academic/startup benchtop to commercial pharmaceutical GMP environment</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Siegfried</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Zofingen (~45m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('9c3e2ae535c3')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Chemielaborant/in analytische Entwicklung', 'Siegfried', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with HPLC, LCMS, and analytical method development from UCT Prague and ETH research | ⚠️ Gaps: Transition from academic/startup benchtop to commercial pharmaceutical GMP environment')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('9c3e2ae535c3')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d101a5aca24b" data-category="Analytical" data-track="Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) & Track 3: Analytical Chemistry" data-score="8" data-commute="56" data-title="Scientist QC - Analytical Development (a), 100%" data-company="Bachem" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-Scientist-QC-Analytical-Development-%28a%29%2C-100-BL-4416/1449346333/" target="_blank" rel="noopener" class="job-title">Scientist QC - Analytical Development (a), 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with ETH Bode group SPPS peptide synthesis, (RP) HPLC method development, and LCMS/MALDI structural elucidation, plus UCT Prague HPLC stationary phase commercialization experience.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate lacks extensive commercial GMP environment validation experience and hands-on operational familiarity with oligonucleotide analytics (as role emphasizes oligos alongside peptides) and Chromeleon CDS software.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) & Track 3: Analytical Chemistry</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('d101a5aca24b')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist QC - Analytical Development (a), 100%', 'Bachem', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) & Track 3: Analytical Chemistry | ✅ Fit: Direct overlap with ETH Bode group SPPS peptide synthesis, (RP) HPLC method development, and LCMS/MALDI structural elucidation, plus UCT Prague HPLC stationary phase commercialization experience. | ⚠️ Gaps: Candidate lacks extensive commercial GMP environment validation experience and hands-on operational familiarity with oligonucleotide analytics (as role emphasizes oligos alongside peptides) and Chromeleon CDS software.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('d101a5aca24b')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e957a96108db" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="8" data-commute="60" data-title="Scientist Stability 80-100% (f/m/d)" data-company="Lonza" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Basel/Scientist-Stability-80-100---f-m-d-_R80456" target="_blank" rel="noopener" class="job-title">Scientist Stability 80-100% (f/m/d)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with her strong hands-on chromatographic expertise including HPLC, LC-MS, method development, and analytical characterization developed during her academic and industrial research projects.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop analytical work to commercial pharmaceutical stability testing under strict GMP regulatory frameworks.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">CH - Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('e957a96108db')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist Stability 80-100% (f/m/d)', 'Lonza', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with her strong hands-on chromatographic expertise including HPLC, LC-MS, method development, and analytical characterization developed during her academic and industrial research projects. | ⚠️ Gaps: Transitioning from academic/startup benchtop analytical work to commercial pharmaceutical stability testing under strict GMP regulatory frameworks.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('e957a96108db')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d139354d3a23" data-category="Pharma QA/Reg" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="8" data-commute="60" data-title="Scientist – Oligonucleotide Chemistry & Innovation" data-company="Roche" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Scientist---Oligonucleotide-Chemistry---Innovation_202609-124798-1" target="_blank" rel="noopener" class="job-title">Scientist – Oligonucleotide Chemistry & Innovation</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with organic synthesis, reaction design, and solid-phase/solution-phase chemistry background developed during UCT Prague and ETH Bode's Group (GLP-1 receptor agonists).</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transition from academic/startup benchtop scale to industrial pharmaceutical oligonucleotide manufacturing, scale-up, and GMP compliance framework.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('d139354d3a23')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist – Oligonucleotide Chemistry & Innovation', 'Roche', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with organic synthesis, reaction design, and solid-phase/solution-phase chemistry background developed during UCT Prague and ETH Bode\'s Group (GLP-1 receptor agonists). | ⚠️ Gaps: Transition from academic/startup benchtop scale to industrial pharmaceutical oligonucleotide manufacturing, scale-up, and GMP compliance framework.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('d139354d3a23')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="9bacd3944f51" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis" data-score="8" data-commute="40" data-title="Lab tech- HPLC Specialist" data-company="Gi Life Sciences Basel" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/33a04268-d94b-4469-b5a1-4911f0303b1c/" target="_blank" rel="noopener" class="job-title">Lab tech- HPLC Specialist</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with analytical HPLC method development, liquid chromatography, structural analysis, and data reporting experience gained during HPLC stationary phase development at UCT Prague and ETH Zürich.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Requires familiarity with specific Design of Experiments (DoE) software and structured commercial validation frameworks beyond academic method optimization.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Gi Life Sciences Basel</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Stein (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('9bacd3944f51')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab tech- HPLC Specialist', 'Gi Life Sciences Basel', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis | ✅ Fit: Direct overlap with analytical HPLC method development, liquid chromatography, structural analysis, and data reporting experience gained during HPLC stationary phase development at UCT Prague and ETH Zürich. | ⚠️ Gaps: Requires familiarity with specific Design of Experiments (DoE) software and structured commercial validation frameworks beyond academic method optimization.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('9bacd3944f51')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="386b6d6c1eb0" data-category="Pharma QA/Reg" data-track="Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)" data-score="8" data-commute="56" data-title="Scientist QC (a) (80 - 100%)" data-company="Bachem" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-Scientist-QC-%28a%29-%2880-100%29-BL-4416/1452050933/" target="_blank" rel="noopener" class="job-title">Scientist QC (a) (80 - 100%)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with analytical chemistry, chromatography, and peptides familiarity from ETH Bode Group SPPS and HPLC/LCMS analysis</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop analytics to strict commercial GMP quality control environment at Bachem</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('386b6d6c1eb0')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist QC (a) (80 - 100%)', 'Bachem', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) | ✅ Fit: Direct overlap with analytical chemistry, chromatography, and peptides familiarity from ETH Bode Group SPPS and HPLC/LCMS analysis | ⚠️ Gaps: Transitioning from academic/startup benchtop analytics to strict commercial GMP quality control environment at Bachem')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('386b6d6c1eb0')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="99dca36e9988" data-category="Analytical" data-track="Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)" data-score="8" data-commute="56" data-title="Lab Technician QC (a) - HPLC Late Phase 100%" data-company="Bachem" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-Lab-Technician-QC-%28a%29-HPLC-Late-Phase-100-BL-4416/1409920033/" target="_blank" rel="noopener" class="job-title">Lab Technician QC (a) - HPLC Late Phase 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with solid-phase peptide synthesis (SPPS) for GLP-1 receptor agonists and reverse-phase HPLC ((RP)HPLC) purification and analysis from ETH Zürich (Bode Group), combined with strong chromatography background in HPLC stationary phase development.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop scale to strict commercial GMP plant quality control operations in a manufacturing environment; learning commercial LIMS/Chromeleon systems.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('99dca36e9988')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab Technician QC (a) - HPLC Late Phase 100%', 'Bachem', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) | ✅ Fit: Direct overlap with solid-phase peptide synthesis (SPPS) for GLP-1 receptor agonists and reverse-phase HPLC ((RP)HPLC) purification and analysis from ETH Zürich (Bode Group), combined with strong chromatography background in HPLC stationary phase development. | ⚠️ Gaps: Transitioning from academic/startup benchtop scale to strict commercial GMP plant quality control operations in a manufacturing environment; learning commercial LIMS/Chromeleon systems.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('99dca36e9988')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a4cc1c299adc" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)" data-score="8" data-commute="56" data-title="Lab Technician R&D (a), 80-100%" data-company="Bachem AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/nmc5gmzt8/lab-technician-r-d-a-80-100" target="_blank" rel="noopener" class="job-title">Lab Technician R&D (a), 80-100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct hands-on experience in Solid-Phase Peptide Synthesis (SPPS), monomer synthesis, and (RP) HPLC/LCMS purification from her ETH Zürich visiting researcher stint working on GLP-1 receptor agonists.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop peptide synthesis to industrial GMP scale-up operations at Bachem, plus managing a longer commute from Zurich North to Bubendorf.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('a4cc1c299adc')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab Technician R&D (a), 80-100%', 'Bachem AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Peptides/CDMO) | ✅ Fit: Direct hands-on experience in Solid-Phase Peptide Synthesis (SPPS), monomer synthesis, and (RP) HPLC/LCMS purification from her ETH Zürich visiting researcher stint working on GLP-1 receptor agonists. | ⚠️ Gaps: Transitioning from academic/startup benchtop peptide synthesis to industrial GMP scale-up operations at Bachem, plus managing a longer commute from Zurich North to Bubendorf.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('a4cc1c299adc')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="1d9f67a0bc35" data-category="Analytical" data-track="Track 2 & 3 (Peptides/Analytical)" data-score="8" data-commute="56" data-title="Scientist QC - Analytical Development (a), 100%" data-company="Bachem AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/xhmzgk3rj/scientist-qc-analytical-development-a-100" target="_blank" rel="noopener" class="job-title">Scientist QC - Analytical Development (a), 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> SPPS peptide synthesis, RP-HPLC, and LCMS expertise</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transition to industrial GMP scale and potential language barrier for team communication</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2 & 3 (Peptides/Analytical)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('1d9f67a0bc35')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist QC - Analytical Development (a), 100%', 'Bachem AG', '🎯 Track: Track 2 & 3 (Peptides/Analytical) | ✅ Fit: SPPS peptide synthesis, RP-HPLC, and LCMS expertise | ⚠️ Gaps: Transition to industrial GMP scale and potential language barrier for team communication')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('1d9f67a0bc35')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a822f20a90d9" data-category="R&D Lab" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="8" data-commute="60" data-title="DEL Scientist – Platform Chemistry (12 Month Contract)" data-company="Monte Rosa Therapeutics" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers-monterosatx.icims.com/jobs/1234/del-scientist---platform-chemistry-%2812-month-contract%29/job" target="_blank" rel="noopener" class="job-title">DEL Scientist – Platform Chemistry (12 Month Contract)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with multi-step organic synthesis, library construction, reaction design, retrosynthesis, and purification experience from UCT Prague and ETH Zürich (Bode's Group).</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Minimal gaps in core synthetic organic techniques; candidate possesses strong benchtop synthesis skills but lacks prior high-throughput DNA-encoded library (DEL) industrial platform scale experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Monte Rosa Therapeutics</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">R&D Lab</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('a822f20a90d9')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'DEL Scientist – Platform Chemistry (12 Month Contract)', 'Monte Rosa Therapeutics', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with multi-step organic synthesis, library construction, reaction design, retrosynthesis, and purification experience from UCT Prague and ETH Zürich (Bode\'s Group). | ⚠️ Gaps: Minimal gaps in core synthetic organic techniques; candidate possesses strong benchtop synthesis skills but lacks prior high-throughput DNA-encoded library (DEL) industrial platform scale experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('a822f20a90d9')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ddb3d66abd74" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="8" data-commute="60" data-title="Analytical Chemistry Scientist - Surfactant Characterization" data-company="Clear Solutions Laboratories" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-high">8/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/4g745mgdn/analytical-chemistry-scientist-surfactant-characterization" target="_blank" rel="noopener" class="job-title">Analytical Chemistry Scientist - Surfactant Characterization</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with analytical HPLC testing, chromatography, method troubleshooting, and data processing developed during UCT Prague HPLC stationary phase commercialization and ETH peptide analytics.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal industrial GMP/GLP surfactant characterization (e.g., polysorbates in biologics), requiring transition from academic/startup chromatography and synthetic HPLC analysis to regulated biopharmaceutical environments.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Clear Solutions Laboratories</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('ddb3d66abd74')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Analytical Chemistry Scientist - Surfactant Characterization', 'Clear Solutions Laboratories', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with analytical HPLC testing, chromatography, method troubleshooting, and data processing developed during UCT Prague HPLC stationary phase commercialization and ETH peptide analytics. | ⚠️ Gaps: Lacks formal industrial GMP/GLP surfactant characterization (e.g., polysorbates in biologics), requiring transition from academic/startup chromatography and synthetic HPLC analysis to regulated biopharmaceutical environments.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('ddb3d66abd74')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="8ae10d8c0294" data-category="Consulting/App" data-track="Track 2: Synthetic Organic & Process Chemistry / Laboratory Automation" data-score="7" data-commute="20" data-title="Field Service Engineer- Chemspeed" data-company="Chemspeed Technologies" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://uscareers-bruker.icims.com/jobs/20038/field-service-engineer--chemspeed/job?hub=12&in_iframe=1" target="_blank" rel="noopener" class="job-title">Field Service Engineer- Chemspeed</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with automated synthesis concepts, hands-on laboratory experience, synthetic organic chemistry, and instrument familiarity (HPLC/LCMS) gained at ETH Zürich and UCT Prague.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal prior experience as a commercial Field Service Engineer servicing automated synthesis workstations, requiring onboarding on hardware maintenance and customer-facing support.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Chemspeed Technologies</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Consulting/App</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry / Laboratory Automation</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('8ae10d8c0294')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Field Service Engineer- Chemspeed', 'Chemspeed Technologies', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry / Laboratory Automation | ✅ Fit: Direct overlap with automated synthesis concepts, hands-on laboratory experience, synthetic organic chemistry, and instrument familiarity (HPLC/LCMS) gained at ETH Zürich and UCT Prague. | ⚠️ Gaps: Lacks formal prior experience as a commercial Field Service Engineer servicing automated synthesis workstations, requiring onboarding on hardware maintenance and customer-facing support.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('8ae10d8c0294')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="2b9e0270e4de" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (CDMO)" data-score="7" data-commute="32" data-title="Ingenieure/Techniker" data-company="Dottikon Exclusive Synthesis" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://dottikon.com/en/jobs-careers/offene-stellen/ingenieure-techniker/" target="_blank" rel="noopener" class="job-title">Ingenieure/Techniker</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Multi-step organic synthesis, reaction troubleshooting, and analytical characterization (HPLC, LCMS, NMR)</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transition from benchtop to industrial GMP-regulated production scale and German language proficiency.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Dottikon Exclusive Synthesis</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Dottikon (~32m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('2b9e0270e4de')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Ingenieure/Techniker', 'Dottikon Exclusive Synthesis', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (CDMO) | ✅ Fit: Multi-step organic synthesis, reaction troubleshooting, and analytical characterization (HPLC, LCMS, NMR) | ⚠️ Gaps: Transition from benchtop to industrial GMP-regulated production scale and German language proficiency.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('2b9e0270e4de')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="8b60870b4f3f" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (CDMO)" data-score="7" data-commute="32" data-title="Laboranten" data-company="Dottikon Exclusive Synthesis" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://dottikon.com/en/jobs-careers/offene-stellen/laboranten/" target="_blank" rel="noopener" class="job-title">Laboranten</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Multi-step organic synthesis, reaction troubleshooting, and HPLC/LCMS purification</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transition from benchtop/startup scale to industrial GMP production environments</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Dottikon Exclusive Synthesis</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Dottikon (~32m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('8b60870b4f3f')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Laboranten', 'Dottikon Exclusive Synthesis', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (CDMO) | ✅ Fit: Multi-step organic synthesis, reaction troubleshooting, and HPLC/LCMS purification | ⚠️ Gaps: Transition from benchtop/startup scale to industrial GMP production environments')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('8b60870b4f3f')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="7cb52e427ae8" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="40" data-title="Process Expert - Compounding & Support 80-100%" data-company="Lonza" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.linkedin.com/jobs/view/4464532680" target="_blank" rel="noopener" class="job-title">Process Expert - Compounding & Support 80-100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with hands-on solid-phase peptide synthesis (SPPS), HPLC purification, analytical characterization, and familiarity with GMP/compliance principles from academic and internship background.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate brings academic and startup R&D benchtop scale rather than large-scale commercial GMP manufacturing, compounding operations, and industrial equipment validation experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza</strong><br><small class="muted">JobSpy (Linkedin)</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Stein, Aargau, Switzerland (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('7cb52e427ae8')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Process Expert - Compounding & Support 80-100%', 'Lonza', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with hands-on solid-phase peptide synthesis (SPPS), HPLC purification, analytical characterization, and familiarity with GMP/compliance principles from academic and internship background. | ⚠️ Gaps: Candidate brings academic and startup R&D benchtop scale rather than large-scale commercial GMP manufacturing, compounding operations, and industrial equipment validation experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('7cb52e427ae8')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="e4b17b7b55c8" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="40" data-title="Process Expert – Cleaning 80-100%" data-company="Lonza" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Stein/Process-Expert---Cleaning-80-100-_R78936-1" target="_blank" rel="noopener" class="job-title">Process Expert – Cleaning 80-100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with synthetic process chemistry, method development, purification, and rigorous laboratory documentation following GMP/GLP standards from UCT Prague and ETH experience.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Scale difference from academic/startup benchtop experimentation to commercial multi-ton pharmaceutical production and cleaning validation in a strict industrial GMP environment.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">CH - Stein (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('e4b17b7b55c8')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Process Expert – Cleaning 80-100%', 'Lonza', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with synthetic process chemistry, method development, purification, and rigorous laboratory documentation following GMP/GLP standards from UCT Prague and ETH experience. | ⚠️ Gaps: Scale difference from academic/startup benchtop experimentation to commercial multi-ton pharmaceutical production and cleaning validation in a strict industrial GMP environment.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('e4b17b7b55c8')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="8a4be68b37e6" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO)" data-score="7" data-commute="45" data-title="In our scientific and technical roles, expect to push boundaries" data-company="Siegfried AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.siegfried.ch/de/careers/scientific-technical/" target="_blank" rel="noopener" class="job-title">In our scientific and technical roles, expect to push boundaries</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct matching with multi-step organic synthesis, SPPS, and analytical chromatography expertise</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup scale to commercial industrial GMP manufacturing plant scale</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Siegfried AG</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Zofingen (~45m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('8a4be68b37e6')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'In our scientific and technical roles, expect to push boundaries', 'Siegfried AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO) | ✅ Fit: Direct matching with multi-step organic synthesis, SPPS, and analytical chromatography expertise | ⚠️ Gaps: Transitioning from academic/startup scale to commercial industrial GMP manufacturing plant scale')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('8a4be68b37e6')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="8ce72fd675f2" data-category="Analytical" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="56" data-title="Scientist QC - Late Phase (a), 100%" data-company="Bachem" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-Scientist-QC-Late-Phase-%28a%29%2C-100-BL-4416/1447502433/" target="_blank" rel="noopener" class="job-title">Scientist QC - Late Phase (a), 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with peptide synthesis background from ETH Bode Group and analytical chromatography competencies.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Demands fluent German (C1/C2) for regulatory communication and extensive formal GMP routine experience beyond academic and startup scale.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>Fluent DE Required (C1/C2)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('8ce72fd675f2')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientist QC - Late Phase (a), 100%', 'Bachem', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with peptide synthesis background from ETH Bode Group and analytical chromatography competencies. | ⚠️ Gaps: Demands fluent German (C1/C2) for regulatory communication and extensive formal GMP routine experience beyond academic and startup scale.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('8ce72fd675f2')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="addc0809c574" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="60" data-title="CBC Process Expert" data-company="Novartis" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://novartis.wd3.myworkdayjobs.com/en-US/Novartis_Careers/job/Basel-City/CBC-Process-Expert_REQ-10083985-2" target="_blank" rel="noopener" class="job-title">CBC Process Expert</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Directly leverages candidate's strong synthetic organic chemistry background, reaction design, multi-step synthesis, and hands-on laboratory troubleshooting developed during UCT Prague research and ETH Zürich internship.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate brings academic and startup benchtop/pilot scale experience but lacks long-term commercial GMP plant scale-up and industrial process engineering experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Novartis</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (City) (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('addc0809c574')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'CBC Process Expert', 'Novartis', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Directly leverages candidate\'s strong synthetic organic chemistry background, reaction design, multi-step synthesis, and hands-on laboratory troubleshooting developed during UCT Prague research and ETH Zürich internship. | ⚠️ Gaps: Candidate brings academic and startup benchtop/pilot scale experience but lacks long-term commercial GMP plant scale-up and industrial process engineering experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('addc0809c574')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="b61293548d51" data-category="R&D Lab" data-track="Track 2: Synthetic Organic & Process Chemistry (Peptides/Oligonucleotides)" data-score="7" data-commute="60" data-title="RNA Biology Associate in oligonucleotide screening" data-company="Roche" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/RNA-Biology-Associate-in-oligonucleotide-screening_202609-124305-2" target="_blank" rel="noopener" class="job-title">RNA Biology Associate in oligonucleotide screening</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct experience with solid-phase peptide synthesis (SPPS) at ETH Zurich, analytical HPLC and LC-MS characterization, and RT-PCR molecular diagnostic workflow experience.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Role focuses on RNA biology screening assays, which may require biological cell-based assay screening experience beyond candidate's primary synthetic and chromatographic background.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">R&D Lab</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Peptides/Oligonucleotides)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('b61293548d51')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'RNA Biology Associate in oligonucleotide screening', 'Roche', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Peptides/Oligonucleotides) | ✅ Fit: Direct experience with solid-phase peptide synthesis (SPPS) at ETH Zurich, analytical HPLC and LC-MS characterization, and RT-PCR molecular diagnostic workflow experience. | ⚠️ Gaps: Role focuses on RNA biology screening assays, which may require biological cell-based assay screening experience beyond candidate\'s primary synthetic and chromatographic background.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('b61293548d51')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="9eeac04f843f" data-category="Consulting/App" data-track="Track 2: Synthetic Organic & Process Chemistry / Application Specialist" data-score="7" data-commute="20" data-title="Automation Chemist - Chemspeed" data-company="Chemspeed Technologies" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://uscareers-bruker.icims.com/jobs/20037/automation-chemist---chemspeed/job?hub=12&in_iframe=1" target="_blank" rel="noopener" class="job-title">Automation Chemist - Chemspeed</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with synthetic organic chemistry background, reaction design, troubleshooting synthetic routes, and extensive hands-on laboratory instrumentation experience (HPLC, LCMS, NMR) applied to automated synthesis platforms like Chemspeed.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lack of direct commercial experience working as an application chemist or field service engineer for hardware/software automation vendors like Chemspeed, requiring transition from bench chemist to hardware/software customer-facing application support.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Chemspeed Technologies</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Consulting/App</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry / Application Specialist</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('9eeac04f843f')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Automation Chemist - Chemspeed', 'Chemspeed Technologies', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry / Application Specialist | ✅ Fit: Direct overlap with synthetic organic chemistry background, reaction design, troubleshooting synthetic routes, and extensive hands-on laboratory instrumentation experience (HPLC, LCMS, NMR) applied to automated synthesis platforms like Chemspeed. | ⚠️ Gaps: Lack of direct commercial experience working as an application chemist or field service engineer for hardware/software automation vendors like Chemspeed, requiring transition from bench chemist to hardware/software customer-facing application support.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('9eeac04f843f')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="303bca70a731" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="7" data-commute="20" data-title="(Associate) Scientist 100%" data-company="Celerion Switzerland AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/5tdbtvq5p/associate-scientist-100" target="_blank" rel="noopener" class="job-title">(Associate) Scientist 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with candidate's strong analytical background in chromatography (HPLC, LCMS) and method development demonstrated during her UCT Prague HPLC stationary phase project and ETH Zürich analytical characterization work.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> CRO environment may require high-throughput GLP/GMP routine testing and validation frameworks, shifting focus from academic synthesis and R&D method development to strict regulatory standard operating procedures.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Celerion Switzerland AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Fehraltorf (~20m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('303bca70a731')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, '(Associate) Scientist 100%', 'Celerion Switzerland AG', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with candidate\'s strong analytical background in chromatography (HPLC, LCMS) and method development demonstrated during her UCT Prague HPLC stationary phase project and ETH Zürich analytical characterization work. | ⚠️ Gaps: CRO environment may require high-throughput GLP/GMP routine testing and validation frameworks, shifting focus from academic synthesis and R&D method development to strict regulatory standard operating procedures.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('303bca70a731')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="0e0cc2b6ebde" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="32" data-title="Produktionschemiker (m/w/d)" data-company="Dottikon Exclusive Synthesis AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/9c632ade-8363-4884-9a05-f5e6697e5d63/" target="_blank" rel="noopener" class="job-title">Produktionschemiker (m/w/d)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Directly matches organic synthesis background, reaction design, retrosynthesis, and scale-up troubleshooting experience from UCT Prague and ETH Bode's Group.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Requires fluent German (C1/C2) while candidate has B1 conversational level, and transitioning from academic/startup benchtop scale to industrial commercial cGMP plant scale.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Dottikon Exclusive Synthesis AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Dottikon (~32m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>Fluent DE Required (C1/C2)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('0e0cc2b6ebde')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Produktionschemiker (m/w/d)', 'Dottikon Exclusive Synthesis AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Directly matches organic synthesis background, reaction design, retrosynthesis, and scale-up troubleshooting experience from UCT Prague and ETH Bode\'s Group. | ⚠️ Gaps: Requires fluent German (C1/C2) while candidate has B1 conversational level, and transitioning from academic/startup benchtop scale to industrial commercial cGMP plant scale.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('0e0cc2b6ebde')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="4267431c1642" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="7" data-commute="32" data-title="Laboranten QC (HPLC/NMR oder GC) (m/w/d)" data-company="Dottikon Exclusive Synthesis AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/bcwn7vzgp/laboranten-qc-hplc-nmr-oder-gc-m-w-d" target="_blank" rel="noopener" class="job-title">Laboranten QC (HPLC/NMR oder GC) (m/w/d)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with HPLC, NMR, and analytical chromatography techniques developed during Master research at UCT Prague and ETH Zürich.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate has strong academic and research analytical experience but lacks formal cGMP plant-scale routine QC testing experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Dottikon Exclusive Synthesis AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Dottikon (~32m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('4267431c1642')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Laboranten QC (HPLC/NMR oder GC) (m/w/d)', 'Dottikon Exclusive Synthesis AG', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with HPLC, NMR, and analytical chromatography techniques developed during Master research at UCT Prague and ETH Zürich. | ⚠️ Gaps: Candidate has strong academic and research analytical experience but lacks formal cGMP plant-scale routine QC testing experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('4267431c1642')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="ce617430f4a2" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="38" data-title="​​Pharmatechnologe oder Chemielaborant Chromatography Services ​" data-company="CARBOGEN AMCIS AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/67dxjj6gj/pharmatechnologe-oder-chemielaborant-chromatography-services" target="_blank" rel="noopener" class="job-title">​​Pharmatechnologe oder Chemielaborant Chromatography Services ​</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with preparative and analytical chromatography (HPLC), method development, and purification experience gained during UCT Prague HPLC stationary phase project and ETH peptide synthesis work.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Language requirement (very good German in writing and speech required while candidate has B1 conversational/lab German) and transition from academic/startup benchtop scale to commercial multi-kg cGMP production plant scale.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>CARBOGEN AMCIS AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Aarau (~38m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>Fluent DE Required (C1/C2)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('ce617430f4a2')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, '​​Pharmatechnologe oder Chemielaborant Chromatography Services ​', 'CARBOGEN AMCIS AG', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with preparative and analytical chromatography (HPLC), method development, and purification experience gained during UCT Prague HPLC stationary phase project and ETH peptide synthesis work. | ⚠️ Gaps: Language requirement (very good German in writing and speech required while candidate has B1 conversational/lab German) and transition from academic/startup benchtop scale to commercial multi-kg cGMP production plant scale.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('ce617430f4a2')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="2bebb7d95d26" data-category="Pharma QA/Reg" data-track="Track 2 & 5 (Peptide CDMO & Technical Writing)" data-score="7" data-commute="56" data-title="Scientific Writer QC (a) 100%" data-company="Bachem" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-Scientific-Writer-QC-%28a%29-100-BL-4416/1449439533/" target="_blank" rel="noopener" class="job-title">Scientific Writer QC (a) 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> SPPS peptide synthesis and HPLC/LCMS analytics experience</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from bench research to formal GxP scientific writing and handling professional German documentation</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2 & 5 (Peptide CDMO & Technical Writing)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('2bebb7d95d26')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Scientific Writer QC (a) 100%', 'Bachem', '🎯 Track: Track 2 & 5 (Peptide CDMO & Technical Writing) | ✅ Fit: SPPS peptide synthesis and HPLC/LCMS analytics experience | ⚠️ Gaps: Transitioning from bench research to formal GxP scientific writing and handling professional German documentation')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('2bebb7d95d26')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="1d84a3f9d397" data-category="R&D Lab" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="60" data-title="Basel Senior Research Associate, Compound Manager More Info" data-company="Monte Rosa Therapeutics" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers-monterosatx.icims.com/jobs/1223/senior-research-associate%2c-compound-manager/job" target="_blank" rel="noopener" class="job-title">Basel Senior Research Associate, Compound Manager More Info</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with synthetic organic chemistry background, reaction design, purification, and molecular handling from UCT Prague and ETH Zürich research experience.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Compound management specific automation and high-throughput inventory workflows represent a slight operational shift from traditional academic synthesis and analytical benchwork.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Monte Rosa Therapeutics</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">R&D Lab</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('1d84a3f9d397')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Basel Senior Research Associate, Compound Manager More Info', 'Monte Rosa Therapeutics', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct overlap with synthetic organic chemistry background, reaction design, purification, and molecular handling from UCT Prague and ETH Zürich research experience. | ⚠️ Gaps: Compound management specific automation and high-throughput inventory workflows represent a slight operational shift from traditional academic synthesis and analytical benchwork.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('1d84a3f9d397')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="511e67b3d07c" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)" data-score="7" data-commute="60" data-title="QC-Spezialist (m/w/d), 100%" data-company="EDP Personalberatung GmbH" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/e587c3fd-afe8-453a-bba4-1fcb1f05483a/" target="_blank" rel="noopener" class="job-title">QC-Spezialist (m/w/d), 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with UCT Prague HPLC stationary phase commercialization experience, HPLC/GC chromatography method familiarity, and report writing in English and German.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Requires more extensive formal QC routine experience and a higher degree of professional German fluency for daily documentation and staff training.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>EDP Personalberatung GmbH</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('511e67b3d07c')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'QC-Spezialist (m/w/d), 100%', 'EDP Personalberatung GmbH', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis (Quality & Method Development) | ✅ Fit: Direct overlap with UCT Prague HPLC stationary phase commercialization experience, HPLC/GC chromatography method familiarity, and report writing in English and German. | ⚠️ Gaps: Requires more extensive formal QC routine experience and a higher degree of professional German fluency for daily documentation and staff training.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('511e67b3d07c')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="a893d4747f49" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="7" data-commute="60" data-title="Research & Development" data-company="Arxada" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-med">7/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lsi.wd3.myworkdayjobs.com/Arxada_Careers" target="_blank" rel="noopener" class="job-title">Research & Development</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct background in synthetic organic chemistry, reaction design, purification, and working with specialty chemicals and stationary phases developed during academic and industrial internship projects.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Transitioning from academic/startup benchtop synthesis to commercial specialty chemical production scale at Arxada in Basel.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Arxada</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('a893d4747f49')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Research & Development', 'Arxada', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Direct background in synthetic organic chemistry, reaction design, purification, and working with specialty chemicals and stationary phases developed during academic and industrial internship projects. | ⚠️ Gaps: Transitioning from academic/startup benchtop synthesis to commercial specialty chemical production scale at Arxada in Basel.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('a893d4747f49')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="d3299c0d98b4" data-category="Consulting/App" data-track="Track 4: Life Sciences & Sustainability / Environmental Consulting" data-score="6" data-commute="15" data-title="Digital Lab Consultant" data-company="wega Informatik" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://wega-informatik-ag.breezy.hr/p/d0763e495acd01-digital-lab-consultant" target="_blank" rel="noopener" class="job-title">Digital Lab Consultant</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Solid scientific foundation in chemistry and laboratory workflows, with digital tool proficiency (ChemDraw, SciFinder, Excel data analysis) and direct experience in collaborative industry partnerships (Chromservis, Galochrom) and technical reporting.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal commercial IT consulting experience, electronic lab notebook (ELN) deployment background, and large-scale enterprise software implementation expertise (such as LIMS or CDS configuration).</div></div>
+            </td>
+            <td class="col-co-cell"><strong>wega Informatik</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Basel / Zürich (~15m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Consulting/App</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 4: Life Sciences & Sustainability / Environmental Consulting</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('d3299c0d98b4')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Digital Lab Consultant', 'wega Informatik', '🎯 Track: Track 4: Life Sciences & Sustainability / Environmental Consulting | ✅ Fit: Solid scientific foundation in chemistry and laboratory workflows, with digital tool proficiency (ChemDraw, SciFinder, Excel data analysis) and direct experience in collaborative industry partnerships (Chromservis, Galochrom) and technical reporting. | ⚠️ Gaps: Lacks formal commercial IT consulting experience, electronic lab notebook (ELN) deployment background, and large-scale enterprise software implementation expertise (such as LIMS or CDS configuration).')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('d3299c0d98b4')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="f21ff0877601" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs" data-score="6" data-commute="33" data-title="Mitarbeiter:in Qualitätskontrolle und -Sicherung QK/QS, mit Stellvertretungsfunktion 100%" data-company="Frike Chemicals AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/9f180f6a-a3e0-4381-9d55-d83f8cb62faf/" target="_blank" rel="noopener" class="job-title">Mitarbeiter:in Qualitätskontrolle und -Sicherung QK/QS, mit Stellvertretungsfunktion 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with scientific documentation, laboratory safety, good laboratory practice (GLP) awareness, and chemical sample lifecycle management from UCT Prague and MCE s.r.o.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal commercial GMP manufacturing experience and deep regulatory submission history; relies primarily on academic and startup quality control rather than industrial plant QA/QC protocols.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Frike Chemicals AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Wetzikon ZH (~33m SBB Train)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('f21ff0877601')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Mitarbeiter:in Qualitätskontrolle und -Sicherung QK/QS, mit Stellvertretungsfunktion 100%', 'Frike Chemicals AG', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs | ✅ Fit: Direct overlap with scientific documentation, laboratory safety, good laboratory practice (GLP) awareness, and chemical sample lifecycle management from UCT Prague and MCE s.r.o. | ⚠️ Gaps: Lacks formal commercial GMP manufacturing experience and deep regulatory submission history; relies primarily on academic and startup quality control rather than industrial plant QA/QC protocols.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('f21ff0877601')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6b1816268c62" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis" data-score="6" data-commute="38" data-title="Lab Technician (contract)" data-company="Roche" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.linkedin.com/jobs/view/4278049478" target="_blank" rel="noopener" class="job-title">Lab Technician (contract)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with analytical execution, laboratory instrumentation, and method handling acquired during UCT Prague HPLC stationary phase research and ETH analytical workflows (HPLC, LCMS).</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate holds an MSc and significant research experience, which is slightly overqualified for a standard technician role; lacks formal routine QC lab operating environments under strict commercial GMP.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Roche</strong><br><small class="muted">JobSpy (Linkedin)</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Rotkreuz, Zug, Switzerland (~38m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('6b1816268c62')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab Technician (contract)', 'Roche', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis | ✅ Fit: Direct overlap with analytical execution, laboratory instrumentation, and method handling acquired during UCT Prague HPLC stationary phase research and ETH analytical workflows (HPLC, LCMS). | ⚠️ Gaps: Candidate holds an MSc and significant research experience, which is slightly overqualified for a standard technician role; lacks formal routine QC lab operating environments under strict commercial GMP.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('6b1816268c62')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="2d45a8f172d2" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)" data-score="6" data-commute="40" data-title="MSAT Expert- Contamination Control 80-100%" data-company="Lonza" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Stein/MSAT-Expert--Contamination-Control-80-100-_R79594-1" target="_blank" rel="noopener" class="job-title">MSAT Expert- Contamination Control 80-100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Strong foundation in analytical instrumentation, laboratory documentation, and quality mindset developed through ETH peptide synthesis, UCT Prague HPLC stationary phase work, and Oxyle analytical water testing.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Contamination control and MSAT focus in a commercial GMP manufacturing facility differ significantly from academic or startup synthetic bench chemistry; lacks direct industrial cleanroom or GMP bio/pharma contamination monitoring experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">CH - Stein (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('2d45a8f172d2')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'MSAT Expert- Contamination Control 80-100%', 'Lonza', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals) | ✅ Fit: Strong foundation in analytical instrumentation, laboratory documentation, and quality mindset developed through ETH peptide synthesis, UCT Prague HPLC stationary phase work, and Oxyle analytical water testing. | ⚠️ Gaps: Contamination control and MSAT focus in a commercial GMP manufacturing facility differ significantly from academic or startup synthetic bench chemistry; lacks direct industrial cleanroom or GMP bio/pharma contamination monitoring experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('2d45a8f172d2')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3a469cd0e215" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)" data-score="6" data-commute="40" data-title="QA Expert Audits and Inspections 80-100%" data-company="Lonza" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lonza.wd3.myworkdayjobs.com/en-US/Lonza_Careers/job/CH---Stein/QA-Expert-Audits-and-Inspections-80-100-_R80363-1" target="_blank" rel="noopener" class="job-title">QA Expert Audits and Inspections 80-100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Familiarity with Good Laboratory Practice (GLP), scientific documentation, traceability, and rigorous analytical methods from UCT Prague and ETH Zürich.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate lacks formal commercial cGMP QA auditing experience, regulatory inspection management, and deep pharmaceutical quality system (PQS) implementation background, operating primarily from a research/academic and junior lab assistant perspective.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">CH - Stein (~40m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('3a469cd0e215')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'QA Expert Audits and Inspections 80-100%', 'Lonza', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career) | ✅ Fit: Familiarity with Good Laboratory Practice (GLP), scientific documentation, traceability, and rigorous analytical methods from UCT Prague and ETH Zürich. | ⚠️ Gaps: Candidate lacks formal commercial cGMP QA auditing experience, regulatory inspection management, and deep pharmaceutical quality system (PQS) implementation background, operating primarily from a research/academic and junior lab assistant perspective.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('3a469cd0e215')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="3bcde4e7c2ac" data-category="Process/Industry" data-track="Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO)" data-score="6" data-commute="55" data-title="Senior Scientific Associate - Solid Dosage Forms Manufacturing" data-company="Idorsia Pharmaceuticals" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.idorsia.com/job/Allschwil%2C-Basel-Area-Senior-Scientific-Associate-Solid-Dosage-Forms-Manufacturing/1443186933/" target="_blank" rel="noopener" class="job-title">Senior Scientific Associate - Solid Dosage Forms Manufacturing</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Batch/column experimental design and analytical documentation experience</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lack of solid dosage form formulation expertise and industrial GMP manufacturing experience</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Idorsia Pharmaceuticals</strong><br><small class="muted">Idorsia Careers</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Allschwil (~55m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Process/Industry</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('3bcde4e7c2ac')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Senior Scientific Associate - Solid Dosage Forms Manufacturing', 'Idorsia Pharmaceuticals', '🎯 Track: Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO) | ✅ Fit: Batch/column experimental design and analytical documentation experience | ⚠️ Gaps: Lack of solid dosage form formulation expertise and industrial GMP manufacturing experience')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('3bcde4e7c2ac')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c6a53ace778a" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance & Regulatory Affairs (Early Career)" data-score="6" data-commute="56" data-title="Lab Support QC - Sampling & Environmental Monitoring (GMP) (a) 100%" data-company="Bachem AG" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.jobs.ch/en/vacancies/detail/2ba2abc7-f04d-4c12-b29c-b2f396ecb5bf/" target="_blank" rel="noopener" class="job-title">Lab Support QC - Sampling & Environmental Monitoring (GMP) (a) 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Laboratory experience with analytical techniques, water treatment, and GLP documentation</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Role requires fluent German (C1) and focuses on routine GMP environmental monitoring rather than synthetic R&D</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem AG</strong><br><small class="muted">jobs.ch</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance & Regulatory Affairs (Early Career)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>Fluent DE Required (C1/C2)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('c6a53ace778a')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Lab Support QC - Sampling & Environmental Monitoring (GMP) (a) 100%', 'Bachem AG', '🎯 Track: Track 5: Pharma Quality Assurance & Regulatory Affairs (Early Career) | ✅ Fit: Laboratory experience with analytical techniques, water treatment, and GLP documentation | ⚠️ Gaps: Role requires fluent German (C1) and focuses on routine GMP environmental monitoring rather than synthetic R&D')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('c6a53ace778a')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c97ad4898683" data-category="Analytical" data-track="Track 3: Analytical Chemistry & Instrumental Analysis" data-score="6" data-commute="60" data-title="Compound Logistics Workflow and Integration Scientist" data-company="Roche" data-date="2026-11-14" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://roche.wd3.myworkdayjobs.com/en-US/roche-ext/job/Basel/Compound-Logistics-Workflow-and-Integration-Scientist_202611-128615" target="_blank" rel="noopener" class="job-title">Compound Logistics Workflow and Integration Scientist</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct overlap with analytical instrumentation, HPLC, LCMS, and laboratory workflow management experience from UCT Prague and ETH Zürich.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Focus leans towards logistics and workflow integration rather than hands-on chemical synthesis or advanced analytical method development.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Roche</strong><br><small class="muted">Workday Direct API</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Basel (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Analytical</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">14 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('c97ad4898683')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Compound Logistics Workflow and Integration Scientist', 'Roche', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis | ✅ Fit: Direct overlap with analytical instrumentation, HPLC, LCMS, and laboratory workflow management experience from UCT Prague and ETH Zürich. | ⚠️ Gaps: Focus leans towards logistics and workflow integration rather than hands-on chemical synthesis or advanced analytical method development.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('c97ad4898683')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="06b115e4c0b5" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs" data-score="6" data-commute="5" data-title="Product Quality Review (PQR) Coordinator / Author" data-company="CSL" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/dd3b3z8qj/product-quality-review-pqr-coordinator-author" target="_blank" rel="noopener" class="job-title">Product Quality Review (PQR) Coordinator / Author</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> MSc in Chemistry, scientific writing, compliance awareness, and location in Glattbrugg matching the employer site.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate has strong hands-on synthetic and analytical lab experience rather than dedicated commercial PQR authoring or formal GMP plant release experience.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>CSL</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Glattbrugg (~5m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>English (C1)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('06b115e4c0b5')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Product Quality Review (PQR) Coordinator / Author', 'CSL', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs | ✅ Fit: MSc in Chemistry, scientific writing, compliance awareness, and location in Glattbrugg matching the employer site. | ⚠️ Gaps: Candidate has strong hands-on synthetic and analytical lab experience rather than dedicated commercial PQR authoring or formal GMP plant release experience.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('06b115e4c0b5')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="c54d233fe890" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)" data-score="6" data-commute="15" data-title="Quality Assurance Specialist" data-company="Gloor & Lang" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://gloorlang.starhunter.software/Headhunter/project/job-ad/hash/6ae89bb2ac8cd" target="_blank" rel="noopener" class="job-title">Quality Assurance Specialist</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Strong foundation in scientific documentation, data management, and structured laboratory workflows from UCT Prague and Oxyle R&D.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate lacks formal commercial GMP plant experience and requires strong German fluency (C1/C2) for daily quality documentation, whereas candidate has B1 German.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Gloor & Lang</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-fast">Baden / Zurich (~15m SBB/Car)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>Fluent DE Required (C1/C2)</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('c54d233fe890')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Quality Assurance Specialist', 'Gloor & Lang', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career) | ✅ Fit: Strong foundation in scientific documentation, data management, and structured laboratory workflows from UCT Prague and Oxyle R&D. | ⚠️ Gaps: Candidate lacks formal commercial GMP plant experience and requires strong German fluency (C1/C2) for daily quality documentation, whereas candidate has B1 German.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('c54d233fe890')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="77769b611b7f" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)" data-score="6" data-commute="30" data-title="Qualifizierungs- / Validierungsingenieur Schaffhausen (m/w/d)" data-company="PPT Pharma Process Technology Group" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://www.linkedin.com/jobs/view/4361051591" target="_blank" rel="noopener" class="job-title">Qualifizierungs- / Validierungsingenieur Schaffhausen (m/w/d)</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Scientific background with an MSc in Chemistry and practical lab experience in regulated or structured environments, matching the entry-level qualification requirements.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Candidate has primarily benchtop R&D and academic synthesis experience rather than hands-on commercial plant qualification (IQ/OQ/PQ) and validation engineering; also requires strong German professional working proficiency.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>PPT Pharma Process Technology Group</strong><br><small class="muted">JobSpy (Linkedin)</small></td>
+            <td class="col-commute-cell"><span class="badge commute-mid">Schaffhausen, Schaffhausen, Switzerland (~30m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('77769b611b7f')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Qualifizierungs- / Validierungsingenieur Schaffhausen (m/w/d)', 'PPT Pharma Process Technology Group', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career) | ✅ Fit: Scientific background with an MSc in Chemistry and practical lab experience in regulated or structured environments, matching the entry-level qualification requirements. | ⚠️ Gaps: Candidate has primarily benchtop R&D and academic synthesis experience rather than hands-on commercial plant qualification (IQ/OQ/PQ) and validation engineering; also requires strong German professional working proficiency.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('77769b611b7f')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="6b58036d0905" data-category="Pharma QA/Reg" data-track="Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)" data-score="6" data-commute="56" data-title="QA Associate - Batch Compliance (a) 100%" data-company="Bachem" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://careers.bachem.com/job/Bubendorf-QA-Associate-Batch-Compliance-%28a%29-100-BL-4416/1448961533/" target="_blank" rel="noopener" class="job-title">QA Associate - Batch Compliance (a) 100%</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct industry context in peptide chemistry (ETH Bode Group GLP-1 SPPS and HPLC/LCMS analysis) matching Bachem's core peptide manufacturing focus, coupled with strict scientific documentation and laboratory safety (HSE/GLP) training.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> Lacks formal commercial GMP batch record review and electronic quality management system (PAS-X/MES) experience, plus requires transitioning from hands-on R&D laboratory execution to routine QA batch compliance and documentation.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Bachem</strong><br><small class="muted">Curated Watchlist</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">Bubendorf (~56m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Pharma QA/Reg</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('6b58036d0905')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'QA Associate - Batch Compliance (a) 100%', 'Bachem', '🎯 Track: Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career) | ✅ Fit: Direct industry context in peptide chemistry (ETH Bode Group GLP-1 SPPS and HPLC/LCMS analysis) matching Bachem\'s core peptide manufacturing focus, coupled with strict scientific documentation and laboratory safety (HSE/GLP) training. | ⚠️ Gaps: Lacks formal commercial GMP batch record review and electronic quality management system (PAS-X/MES) experience, plus requires transitioning from hands-on R&D laboratory execution to routine QA batch compliance and documentation.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('6b58036d0905')">Hide</button>
+            </td>
+        </tr>
+        
+        <tr data-id="20c1afd96b2f" data-category="Consulting/App" data-track="Track 3: Analytical Chemistry & Instrumental Analysis / Track 2: CDMO Technical Support" data-score="6" data-commute="60" data-title="Analytics Solutions Manager" data-company="Lonza Group AG" data-date="2026-11-13" data-degree="MSc/BSc Suitable">
+            <td class="col-fit-cell"><span class="badge score-low">6/10</span></td>
+            <td class="col-role-cell">
+                <a href="https://lifesciencework.ch/jobs/9g2fdk96s/analytics-solutions-manager" target="_blank" rel="noopener" class="job-title">Analytics Solutions Manager</a>
+                <div class="job-summary"><div class="sum-row"><span class="sum-tag sum-fit">✅ Fit</span> Direct background in HPLC method development, chromatography, and analytical characterization gained during UCT Prague stationary phase commercialization and ETH peptide analytics.</div><div class="sum-row"><span class="sum-tag sum-gap">⚠️ Gaps</span> The role leans toward commercial, customer-facing, or technical solutions support rather than pure hands-on R&D laboratory execution, representing a shift toward application and technical management.</div></div>
+            </td>
+            <td class="col-co-cell"><strong>Lonza Group AG</strong><br><small class="muted">Life Science Work</small></td>
+            <td class="col-commute-cell"><span class="badge commute-far">BASEL (~60m Car/SBB)</span></td>
+            <td class="col-cat-cell"><span class="tag cat-tag">Consulting/App</span><div class="cat-track"><span class="sum-tag sum-track">🎯 Track</span> Track 3: Analytical Chemistry & Instrumental Analysis / Track 2: CDMO Technical Support</div></td>
+            <td class="col-degree-cell"><span class="tag">MSc/BSc Suitable</span><br><small>EN + DE B1/B2 OK</small></td>
+            <td class="col-found-cell">13 November 2026</td>
+            <td class="col-action-cell">
+                <button class="btn-action" onclick="toggleApplied('20c1afd96b2f')">Applied</button>
+                <button class="btn-prompt" onclick="copyPrompt(event, 'Analytics Solutions Manager', 'Lonza Group AG', '🎯 Track: Track 3: Analytical Chemistry & Instrumental Analysis / Track 2: CDMO Technical Support | ✅ Fit: Direct background in HPLC method development, chromatography, and analytical characterization gained during UCT Prague stationary phase commercialization and ETH peptide analytics. | ⚠️ Gaps: The role leans toward commercial, customer-facing, or technical solutions support rather than pure hands-on R&D laboratory execution, representing a shift toward application and technical management.')">CV prompt</button>
+                <button class="btn-hide btn-hide-toggle" onclick="hideRow('20c1afd96b2f')">Hide</button>
+            </td>
+        </tr>
+        
+        </tbody>
+    </table>
+
+<script>
+    let showHiddenOnly = false;
+
+    function getHiddenJobs() {
+        return JSON.parse(localStorage.getItem('hiddenJobs') || '[]');
+    }
+
+    function updateHiddenCount() {
+        const hidden = getHiddenJobs();
+        const btn = document.getElementById('toggleHiddenBtn');
+        if (!btn) return;
+        if (showHiddenOnly) {
+            btn.classList.add('active-hidden-view');
+            btn.innerText = `← View Active Roles (${hidden.length} hidden)`;
+        } else {
+            btn.classList.remove('active-hidden-view');
+            btn.innerText = `Show Hidden (${hidden.length})`;
+        }
+    }
+
+    function toggleShowHidden() {
+        showHiddenOnly = !showHiddenOnly;
+        updateHiddenCount();
+        filterTable();
+    }
+
+    function loadState() {
+        const applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+        document.querySelectorAll('#jobsTable tbody tr').forEach(tr => {
+            const id = tr.dataset.id;
+            if (applied.includes(id)) tr.classList.add('applied');
+        });
+        updateHiddenCount();
+    }
+    function toggleApplied(id) {
+        let applied = JSON.parse(localStorage.getItem('appliedJobs') || '[]');
+        const tr = document.querySelector(`tr[data-id="${id}"]`);
+        if (applied.includes(id)) {
+            applied = applied.filter(x => x !== id);
+            tr.classList.remove('applied');
+        } else {
+            applied.push(id);
+            tr.classList.add('applied');
+        }
+        localStorage.setItem('appliedJobs', JSON.stringify(applied));
+    }
+    function hideRow(id) {
+        let hidden = getHiddenJobs();
+        if (!hidden.includes(id)) hidden.push(id);
+        localStorage.setItem('hiddenJobs', JSON.stringify(hidden));
+        updateHiddenCount();
+        filterTable();
+    }
+    function unhideRow(id) {
+        let hidden = getHiddenJobs();
+        hidden = hidden.filter(x => x !== id);
+        localStorage.setItem('hiddenJobs', JSON.stringify(hidden));
+        updateHiddenCount();
+        filterTable();
+    }
+    function copyPrompt(e, title, company, summary) {
+        const prompt = `I am applying for the position of "${title}" at "${company}".
+
+Candidate Profile:
+- Education: Master’s in Chemistry (Honors) & Bachelor’s in Drug Synthesis & Production (Honors), UCT Prague
+- Academic Research: 6 months Visiting Researcher & TA at ETH Zürich (Bode Group: peptide/GLP-1 synthesis, SPPS, HPLC, LCMS, MALDI, NMR) + 2 years PhD Researcher at UCT Prague (organic synthesis, development & commercialization of HPLC stationary phases Astra® DM with industry partners)
+- Industry R&D: R&D Innovation Intern at an ETH cleantech spin-off (water treatment, ion-exchange resins, batch & column experiments, COD, photometry, ISE)
+- Hands-on Lab & Analytical Skills: Synthetic organic chemistry, reaction design & retrosynthesis, SPPS peptide synthesis, asymmetric organocatalysis, HPLC / RP-HPLC, LCMS, MALDI, NMR, UV/Vis, IR, RT-PCR, GLP & HSE
+- Software: ChemDraw, SciFinder, Reaxys, MNova, Excel
+- Languages: English (fluent C1), German (conversational B1), Czech (Native)
+
+Role Context & Critical Match Assessment:
+${summary}
+
+Please generate:
+1. Three tailored, high-impact bullet points for my CV emphasizing my specific relevant lab experience for this role and strategically addressing the identified career gaps.
+2. A compelling 3-point explanation of why my ETH Zurich research, UCT Prague synthesis/HPLC experience, and cleantech startup background makes me an ideal fit while bridging any gaps.
+3. A polished, professional 3-paragraph cover letter in English matching this company.`;
+
+        navigator.clipboard.writeText(prompt).then(() => {
+            const btn = e.target;
+            const orig = btn.innerText;
+            btn.innerText = 'Copied!';
+            btn.style.background = '#16a34a';
+            setTimeout(() => {
+                btn.innerText = orig;
+                btn.style.background = '';
+            }, 2000);
+        });
+    }
+    function filterTable() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const cat = document.getElementById('catFilter').value;
+        const maxC = parseInt(document.getElementById('commuteFilter').value);
+        const minS = parseInt(document.getElementById('scoreFilter').value || '0');
+        const hidden = getHiddenJobs();
+
+        let visibleCount = 0;
+        document.querySelectorAll('#jobsTable tbody tr').forEach(tr => {
+            const id = tr.dataset.id;
+            const isHidden = hidden.includes(id);
+
+            if (showHiddenOnly) {
+                if (!isHidden) {
+                    tr.style.display = 'none';
+                    return;
+                }
+                tr.classList.add('is-hidden-row');
+                const btn = tr.querySelector('.btn-hide-toggle');
+                if (btn) {
+                    btn.innerText = 'Unhide';
+                    btn.className = 'btn-hide btn-unhide btn-hide-toggle';
+                    btn.onclick = () => unhideRow(id);
+                }
+            } else {
+                if (isHidden) {
+                    tr.style.display = 'none';
+                    return;
+                }
+                tr.classList.remove('is-hidden-row');
+                const btn = tr.querySelector('.btn-hide-toggle');
+                if (btn) {
+                    btn.innerText = 'Hide';
+                    btn.className = 'btn-hide btn-hide-toggle';
+                    btn.onclick = () => hideRow(id);
+                }
+            }
+
+            const text = tr.innerText.toLowerCase();
+            const matchQ = text.includes(q);
+            const matchCat = !cat || tr.dataset.category === cat;
+            const matchC = parseInt(tr.dataset.commute) <= maxC;
+            const matchS = parseInt(tr.dataset.score) >= minS;
+            const isVisible = (matchQ && matchCat && matchC && matchS);
+            tr.style.display = isVisible ? '' : 'none';
+            if (isVisible) visibleCount++;
+        });
+
+        const countDisplay = document.getElementById('roleCountDisplay');
+        if (countDisplay) {
+            countDisplay.innerHTML = showHiddenOnly
+                ? `<strong>${visibleCount}</strong> Hidden Roles`
+                : `<strong>${visibleCount}</strong> Matching Roles`;
+        }
+    }
+
+    let currentSortCol = 0;
+    let currentSortDir = 'desc';
+
+    function getCellValue(tr, idx) {
+        switch (idx) {
+            case 0: return parseInt(tr.dataset.score || '0', 10);
+            case 1: return (tr.dataset.title || '').toLowerCase();
+            case 2: return (tr.dataset.company || '').toLowerCase();
+            case 3: return parseInt(tr.dataset.commute || '999', 10);
+            case 4: return ((tr.dataset.category || '') + ' ' + (tr.dataset.track || '')).toLowerCase();
+            case 5: return (tr.dataset.degree || tr.children[5]?.innerText || '').toLowerCase();
+            case 6: return tr.dataset.date || '';
+            case 7: return tr.classList.contains('applied') ? 1 : 0;
+            default: return tr.children[idx]?.innerText.trim().toLowerCase() || '';
+        }
+    }
+
+    function onMobileSortChange() {
+        const val = document.getElementById('mobileSort').value;
+        const [colStr, dir] = val.split('-');
+        sortTable(parseInt(colStr, 10), dir);
+    }
+
+    function sortTable(colIndex, forcedDir = null) {
+        const table = document.getElementById('jobsTable');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        const headers = table.querySelectorAll('thead th');
+
+        if (forcedDir) {
+            currentSortCol = colIndex;
+            currentSortDir = forcedDir;
+        } else if (currentSortCol === colIndex) {
+            currentSortDir = (currentSortDir === 'asc') ? 'desc' : 'asc';
+        } else {
+            currentSortCol = colIndex;
+            // Fit (0), Found (6), Track (7) default to descending; others default to ascending
+            currentSortDir = (colIndex === 0 || colIndex === 6 || colIndex === 7) ? 'desc' : 'asc';
+        }
+
+        // Sync mobile sort dropdown if present
+        const mobileSort = document.getElementById('mobileSort');
+        if (mobileSort) {
+            const key = `${colIndex}-${currentSortDir}`;
+            for (let opt of mobileSort.options) {
+                if (opt.value === key) {
+                    mobileSort.value = key;
+                    break;
+                }
+            }
+        }
+
+        headers.forEach((th, idx) => {
+            th.classList.remove('asc', 'desc');
+            const icon = th.querySelector('.sort-icon');
+            if (icon) {
+                if (idx === colIndex) {
+                    th.classList.add(currentSortDir);
+                    icon.textContent = currentSortDir === 'asc' ? '▲' : '▼';
+                } else {
+                    icon.textContent = '↕';
+                }
+            }
+        });
+
+        rows.sort((a, b) => {
+            const valA = getCellValue(a, colIndex);
+            const valB = getCellValue(b, colIndex);
+
+            let comp = 0;
+            if (typeof valA === 'number' && typeof valB === 'number') {
+                comp = valA - valB;
+            } else {
+                comp = String(valA).localeCompare(String(valB));
+            }
+            if (comp !== 0) return currentSortDir === 'asc' ? comp : -comp;
+
+            // Tie-breakers: Fit sorts secondary by Date (newest first); Date sorts secondary by Fit (highest first)
+            if (colIndex === 0) {
+                const dateA = a.dataset.date || '';
+                const dateB = b.dataset.date || '';
+                return dateB.localeCompare(dateA);
+            }
+            if (colIndex === 6) {
+                const fitA = parseInt(a.dataset.score || '0', 10);
+                const fitB = parseInt(b.dataset.score || '0', 10);
+                return fitB - fitA;
+            }
+            return 0;
+        });
+
+        rows.forEach(r => tbody.appendChild(r));
+    }
+    loadState();
+    filterTable();
+</script>
+</body>
+</html>

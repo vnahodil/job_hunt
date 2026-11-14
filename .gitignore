@@ -1,0 +1,36 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Candidate Private Profiles (kept local only)
+config/candidate/*
+!config/candidate/*.example.txt
+*.pdf
+
+# Local SQLite Database (crawled jobs & commute cache)
+chem_jobs.db
+
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Logs
+*.log
+radar.log
+radar_err.log
+
+# Scratch files
+brain/

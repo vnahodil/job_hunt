@@ -1,0 +1,31 @@
+CANDIDATE CURRICULUM VITAE (CV) [TEMPLATE]
+
+NAME: [Candidate Name]
+CONTACT:
+- Location: Zurich, Switzerland
+- Email: candidate@example.com
+- Phone: +41 XX XXX XX XX
+
+PROFESSIONAL SUMMARY:
+Research chemist with a Master’s degree in Chemistry and a strong background in synthetic organic chemistry. Proven expertise in reaction design, retrosynthesis, purification, and structural elucidation. Adept at leveraging digital tools to independently execute and troubleshoot complex synthetic routes in a safe, effective, and sustainable manner.
+
+PROFESSIONAL EXPERIENCE:
+1. R&D Innovation Intern | Swiss Cleantech Startup, Greater Zurich Area
+- Managed laboratory chemical analyses and evaluated separation technologies (ion-exchange resins).
+- Conducted lab-based analyses (COD, photometry, ISE) and data modeling in Excel.
+
+2. Visiting Researcher & Teaching Assistant | ETH Zürich
+- Synthesis of peptides (GLP-1 receptor agonists), solid-phase peptide synthesis (SPPS), purification and analytical characterization via (RP) HPLC, LCMS, NMR.
+
+3. Researcher / PhD Student | University of Chemistry and Technology Prague
+- Organic synthesis and development/commercialization of HPLC stationary phases with industrial partners.
+
+EDUCATION:
+1. Master’s Degree in Chemistry (Honors)
+2. Bachelor’s Degree in Drug Synthesis and Production (Honors)
+
+SKILLS & METHODOLOGIES:
+- Synthetic organic chemistry, reaction design, retrosynthesis
+- SPPS peptide synthesis, asymmetric synthesis, organocatalysis
+- Chromatography (HPLC, RP-HPLC), LC-MS, MALDI, NMR, GLP & HSE
+- Languages: English (C1/C2), German (B1/B2)

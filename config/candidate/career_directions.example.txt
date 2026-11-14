@@ -1,0 +1,19 @@
+CANDIDATE TARGET CAREER TRACKS & PREFERENCES [TEMPLATE]
+
+Track 1: Cleantech & Sustainable Chemistry R&D
+- Water treatment, environmental chemistry, carbon capture, heterogeneous catalysis, green synthesis.
+
+Track 2: Synthetic Organic & Process Chemistry (Pharma / CDMO / Specialty Chemicals)
+- Medicinal chemistry, peptide chemistry (SPPS), route scouting, scale-up, reaction optimization.
+
+Track 3: Analytical Chemistry & Chromatography (Method Development & QC)
+- HPLC, RP-HPLC, LC-MS, GC-MS, stationary phase development, bioanalysis, method validation.
+
+Track 4: Scientific Collaborator & Academic Spin-Off Research
+- ETH / University spin-offs, translational research, lab management, interdisciplinary projects.
+
+Track 5: Pharma Quality Assurance (QA) & Regulatory Affairs (Early Career)
+- GMP compliance, deviation handling, batch release documentation, qualification/validation.
+
+Track 6: Life Science Consulting & Application Engineering
+- Technical advisory, customer applications, instrument demonstrations, product stewardship.
