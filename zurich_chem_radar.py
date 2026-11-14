@@ -222,6 +222,7 @@ def main():
     already_seen_count = 0
     commute_exceeded_count = 0
     to_evaluate = []
+    seen_in_batch = set()
 
     for item in raw_jobs:
         title = item.get("title", "").strip()
@@ -235,6 +236,10 @@ def main():
             continue
 
         jhash = make_job_hash(company, title)
+        if jhash in seen_in_batch:
+            continue
+        seen_in_batch.add(jhash)
+
         cur.execute("SELECT 1 FROM jobs WHERE job_hash = ?", (jhash,))
         if cur.fetchone():
             already_seen_count += 1
@@ -282,7 +287,7 @@ def main():
 
         ev = evaluate_job(client, title, company, location, desc, source)
         cur.execute(
-            """INSERT INTO jobs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            """INSERT OR REPLACE INTO jobs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (
                 jhash, title, company, location, url, source,
                 commute_mins, commute_mode, ev.match_score,
