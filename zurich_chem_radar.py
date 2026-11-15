@@ -54,7 +54,6 @@ def publish_to_github(commit_msg: str = None) -> bool:
             str(cfg.PROJECT_ROOT / ".nojekyll"),
             str(cfg.DOCS_DIR / ".nojekyll"),
             str(cfg.PROJECT_ROOT / ".gitignore"),
-            str(cfg.DB_PATH),
             str(cfg.PROJECT_ROOT / "src"),
             str(cfg.PROJECT_ROOT / "config"),
             str(cfg.PROJECT_ROOT / "zurich_chem_radar.py"),
