@@ -229,8 +229,14 @@ def evaluate_job_heuristic(title: str, company: str, desc: str, source: str, loc
 # Gemini Flash evaluator (with automatic fallback cascade)
 # ---------------------------------------------------------------------------
 
+_DAILY_QUOTA_EXHAUSTED = False
+
 def evaluate_job(client, title: str, company: str, location: str, desc: str, source: str) -> JobEvaluation:
     """Uses Gemini Flash (with automatic cascade and CV/Career matching) for critical job evaluation."""
+    global _DAILY_QUOTA_EXHAUSTED
+    if _DAILY_QUOTA_EXHAUSTED:
+        return evaluate_job_heuristic(title, company, desc, source)
+
     # Fast guardrail: check foreign locations or hard negative keywords
     t_clean = title.strip()
     loc_clean = (location or "").strip()
@@ -331,6 +337,10 @@ Description:
                 return ev
             except Exception as e:
                 err_msg = str(e).lower()
+                if "per day limit exceeded" in err_msg:
+                    print("  [WARN] Gemini daily free tier quota exceeded. Fast-falling back to heuristic for remainder of run.")
+                    _DAILY_QUOTA_EXHAUSTED = True
+                    return evaluate_job_heuristic(title, company, desc, source)
                 if "429" in err_msg or "resource_exhausted" in err_msg:
                     time.sleep(2 * (attempt + 1))
                     continue
