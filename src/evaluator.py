@@ -314,8 +314,6 @@ Description:
     models_to_try = [
         "gemini-3.1-flash-lite",
         "gemini-3.5-flash-lite",
-        "gemini-3.5-flash",
-        "gemini-3.8-flash",
     ]
     for attempt in range(2):
         for model_name in models_to_try:
@@ -338,13 +336,18 @@ Description:
             except Exception as e:
                 err_msg = str(e).lower()
                 if "per day limit exceeded" in err_msg:
-                    print("  [WARN] Gemini daily free tier quota exceeded. Fast-falling back to heuristic for remainder of run.")
-                    _DAILY_QUOTA_EXHAUSTED = True
-                    return evaluate_job_heuristic(title, company, desc, source)
+                    if model_name == models_to_try[-1] and attempt == 1:
+                        print("  [WARN] Gemini daily free tier quota exceeded (500 RPD). Fast-falling back to heuristic for remainder of run.")
+                        _DAILY_QUOTA_EXHAUSTED = True
+                        return evaluate_job_heuristic(title, company, desc, source)
+                    continue
+                if "503" in err_msg or "unavailable" in err_msg:
+                    time.sleep(1.0)
+                    continue
                 if "429" in err_msg or "resource_exhausted" in err_msg:
                     time.sleep(2 * (attempt + 1))
                     continue
-                # For network/timeout, 503, or unavailable, continue to next model in cascade
+                # For network/timeout or other errors, continue to next model in cascade
                 continue
 
     print(f"  [WARN] LLM evaluation failed for '{title[:30]}', using updated heuristic fallback.")
